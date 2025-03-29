@@ -4,43 +4,43 @@ import viteLogo from '/vite.svg'
 import './app.css'
 import { SignalForm } from '../../src/form';
 import { Input, LabeledInput, LabeledTextInput } from '../../src/input';
-import { signal, useSignal } from '@preact/signals';
-import { deepSignal, useDeepSignal } from 'deepsignal'
+import { useMappedSignal } from '../../src/hooks';
+type TestModel = {
+  a: any,
+  b: any,
+  c: any
+}
 export function App() {
   const [count, setCount] = useState(0)
-  const formData = useDeepSignal<{
-    a: any,
-    b: any,
-    c: any
-  }>({ a: 1, b: 'b', c: 'c' });
+  const initformData: TestModel = { a: 1, b: 'b', c: 'c' };
+  let formData = useMappedSignal(initformData)
   let tick = useCallback(() => {
     console.log('making tick', formData.a)
-    formData.a++;
+    formData.a.value++;
     return formData.a;
-  }, [formData.$a])
+  }, [])
   let ref = useRef(setTimeout(() => {
-
-    console.log('Tick', tick());
+    formData.a.value++;
+    console.log(formData);
   }, 1000))
   return (
     <>
-      <SignalForm initData={({ b: 2 })} onSubmit={(e, signal) => {
+      <SignalForm signal={formData} onSubmit={(e, signal) => {
         console.log(signal, formData === signal)
         //equal when passed the signal but doesn't rerender
 
         // set it to render?
         // formData.value = { ...signal.value };
       }}>
-        <Input name="a" value={formData.$a} />
+        <Input name="a" />
         <Input name="b" />
         <Input name="c" />
         <LabeledInput label="Doesn't have initial data" name="x" />
-        <LabeledTextInput label="AAAAAA" name="a" />
+        {/* <LabeledTextInput label="AAAAAA" name="a" /> */}
         <LabeledTextInput label="BBBB" name="b" />
         <button>Submit</button>
       </SignalForm>
       <pre>{JSON.stringify(formData, undefined, '  ')}</pre>
-      <p>{formData.$a}</p>
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} class="logo" alt="Vite logo" />

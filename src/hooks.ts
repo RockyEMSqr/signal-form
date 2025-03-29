@@ -4,6 +4,7 @@ import { ChangeEvent } from "preact/compat";
 import { InputProps } from "./types";
 import { dset } from "./utils";
 import dlv from 'dlv';
+import { toMappedSignal } from "./form";
 export const useSignalFormInput = <T,>(p: InputProps<T>) => {
     console.log('init hook', p.name)
     const ctx = useContext(SignalFormCtx);
@@ -23,7 +24,12 @@ export const useSignalFormInput = <T,>(p: InputProps<T>) => {
     return {
         ctx,
         // signal: thisInputSignal,
+        //if not a signal change value to a signal?
         value: p.value || dlv(ctx.signal, p.name),
         onChange
     }
+}
+
+export function useMappedSignal<T extends object>(obj: T) {
+    return useMemo(() => toMappedSignal(obj), []);
 }

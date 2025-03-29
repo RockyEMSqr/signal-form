@@ -6,7 +6,6 @@ import { InputProps, LabeledInputProps } from "./types";
 export const Input = (p: InputProps<string>) => {
     const { ctx, value, onChange } = useSignalFormInput(p)
     // should i just {...p} the props?
-    debugger;
     return <input type={p.type} class={p.class} value={value} onChange={onChange} id={p.id || p.name} placeholder={p.placeholder} />
 }
 export const LabeledInput = (p: LabeledInputProps<string>) => {

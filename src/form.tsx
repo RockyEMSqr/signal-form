@@ -14,9 +14,7 @@ export function toMappedSignal<T extends object>(obj: T) {
     for (let i in obj) reactive[i] = useSignal(obj[i]);
     return reactive;
 }
-function useReactive<T extends object>(obj: T) {
-    return useMemo(() => toMappedSignal(obj), []);
-}
+
 // I dont know if A Form parent container is a good idea but probably is
 
 export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps<T>>) => {
