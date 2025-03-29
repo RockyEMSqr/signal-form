@@ -1,12 +1,11 @@
-import { Signal } from "@preact/signals"
-import { DeepSignal } from "deepsignal";
 import { RenderableProps } from "preact";
 import { ChangeEvent, HTMLInputTypeAttribute } from "preact/compat"
+import { NestedSignal } from "./form";
 
 export type SignalFormProps<T> = {
-    onSubmit?: (e: SubmitEvent, signal: DeepSignal<T>) => void,
+    onSubmit?: (e: SubmitEvent, signal: NestedSignal<T>) => void,
     initData?: Partial<T> | undefined,
-    signal?: DeepSignal<T>
+    signal?: NestedSignal<T>
 };
 
 type SignalInputProps<ValueType> = {
