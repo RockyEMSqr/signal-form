@@ -9,29 +9,35 @@ import { SignalFormProps } from './types';
 // We may land a more comprehensive "Deep" Reactive in core,
 // since "Shallow" Reactive is trivial to implement atop Signal:
 export type NestedSignal<T> = { [K in keyof T]: Signal<T[K]> };
-export function toMappedSignal<T extends object>(obj: T) {
+export function toNestedSignal<T extends object>(obj: T) {
     let reactive = {} as NestedSignal<T>;
-    for (let i in obj) reactive[i] = useSignal(obj[i]);
+    for (let i in obj) {
+        if (typeof obj[i] == 'object') {
+            reactive[i] = toNestedSignal(obj[i])
+        } else {
+            reactive[i] = useSignal(obj[i]);
+        }
+    }
     return reactive;
 }
 
 // I dont know if A Form parent container is a good idea but probably is
 
 export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps<T>>) => {
-    const formSignal = p.signal || toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
-    useEffect(() => {
-        console.log(formSignal);
-        if (!p.initData) {
-            if (!p.signal) {
-                // formSignal = {} as T
-            } else {
-                console.info('no init data but has signal')
-            }
-        } else {
-            //formSignal.value = p.initData as T
-        }
-        console.log(formSignal);
-    }, [p.initData])
+    const formSignal = p.signal //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
+    // useEffect(() => {
+    //     console.log(formSignal);
+    //     if (!p.initData) {
+    //         if (!p.signal) {
+    //             // formSignal = {} as T
+    //         } else {
+    //             console.info('no init data but has signal')
+    //         }
+    //     } else {
+    //         //formSignal.value = p.initData as T
+    //     }
+    //     console.log(formSignal);
+    // }, [p.initData])
     const processChild = (child: ComponentChild) => {
         if (typeof child == 'function') {
             return child(formSignal);
@@ -55,9 +61,12 @@ export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps
         e.preventDefault();
         p.onSubmit && p.onSubmit(e, formSignal);
     }, [])
+    console.log('Signal Form rendered')
     return (<SignalFormCtx.Provider value={({ signal: formSignal })}>
         <form onSubmit={onSubmit}>
-            {processChildren(p.children)}
+            {/* {processChildren(p.children)}
+             */}
+            {p.children}
         </form>
     </SignalFormCtx.Provider>)
 }

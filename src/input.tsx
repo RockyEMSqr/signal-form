@@ -4,9 +4,17 @@ import { InputProps, LabeledInputProps } from "./types";
 
 
 export const Input = (p: InputProps<string>) => {
-    const { ctx, value, onChange } = useSignalFormInput(p)
+    const { ctx, value, onChange, onKeyUp } = useSignalFormInput(p)
     // should i just {...p} the props?
-    return <input type={p.type} class={p.class} value={value} onChange={onChange} id={p.id || p.name} placeholder={p.placeholder} />
+    // console.log('Input render', p.name, value);
+    return <input type={p.type}
+        class={p.class}
+        value={value}
+        onChange={onChange}
+        id={p.id || p.name}
+        placeholder={p.placeholder}
+        onKeyUp={onKeyUp}
+    />
 }
 export const LabeledInput = (p: LabeledInputProps<string>) => {
     return <>

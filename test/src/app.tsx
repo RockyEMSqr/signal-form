@@ -1,46 +1,72 @@
-import { useRef, useState, useCallback } from 'preact/hooks'
+import { useRef, useState, useCallback, useEffect } from 'preact/hooks'
 import preactLogo from './assets/preact.svg'
 import viteLogo from '/vite.svg'
 import './app.css'
-import { SignalForm } from '../../src/form';
+import { SignalForm, toNestedSignal } from '../../src/form';
 import { Input, LabeledInput, LabeledTextInput } from '../../src/input';
-import { useMappedSignal } from '../../src/hooks';
+import { useMappedSignal, useNestedSignal } from '../../src/hooks';
+import { useSignal } from '@preact/signals';
 type TestModel = {
   a: any,
   b: any,
-  c: any
+  c: any,
+  sub: { a: number, b: number, c: number }
 }
 export function App() {
+  let submittedData = useSignal('Not submitted Yet');
+
   const [count, setCount] = useState(0)
-  const initformData: TestModel = { a: 1, b: 'b', c: 'c' };
-  let formData = useMappedSignal(initformData)
+  const initformData: TestModel = {
+    a: 1, b: 'b', c: 'hello',
+    sub: { a: 1, b: 2, c: 3 }
+  };
+  let formData = useNestedSignal(initformData)
   let tick = useCallback(() => {
-    console.log('making tick', formData.a)
     formData.a.value++;
-    return formData.a;
   }, [])
-  let ref = useRef(setTimeout(() => {
-    formData.a.value++;
-    console.log(formData);
-  }, 1000))
+  useEffect(() => {
+    setInterval(() => {
+      tick();
+    }, 1000);
+  }, [])
+
+  submittedData.subscribe((a) => {
+    console.log(a);
+  })
   return (
     <>
+      <button onClick={e => {
+        console.log(submittedData.value);
+        console.log(formData)
+      }}>Console log state</button>
       <SignalForm signal={formData} onSubmit={(e, signal) => {
-        console.log(signal, formData === signal)
+        console.log(signal, formData, formData === signal, JSON.stringify(signal));
+        let doubled = (signal.a.value * 2);
+        console.log('doubled ', doubled);
+        submittedData.value = {
+          x: ';akldfs;ajdffal;akdlsf;akldsfj ' + doubled.toString(),
+          ...JSON.parse(JSON.stringify(signal))
+
+        };
         //equal when passed the signal but doesn't rerender
 
         // set it to render?
-        // formData.value = { ...signal.value };
+        // formData.value = {...signal.value};
       }}>
         <Input name="a" />
-        <Input name="b" />
-        <Input name="c" />
-        <LabeledInput label="Doesn't have initial data" name="x" />
+        {/* <Input name="b" /> */}
+        {/* <Input name="c" /> */}
+        {/* <LabeledInput label="Doesn't have initial data" name="x" /> */}
         {/* <LabeledTextInput label="AAAAAA" name="a" /> */}
-        <LabeledTextInput label="BBBB" name="b" />
+        <LabeledTextInput label="B" name="b" />
+        <LabeledTextInput label="B" name="c" />
+
+        <LabeledTextInput label="sub.a" name="sub.a" />
         <button>Submit</button>
-      </SignalForm>
+      </SignalForm >
       <pre>{JSON.stringify(formData, undefined, '  ')}</pre>
+      <h2>Submitted:</h2>
+      <pre>{JSON.stringify(submittedData, undefined, '  ')}</pre>
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} class="logo" alt="Vite logo" />

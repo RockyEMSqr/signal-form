@@ -1,6 +1,7 @@
 import { RenderableProps } from "preact";
 import { ChangeEvent, HTMLInputTypeAttribute } from "preact/compat"
 import { NestedSignal } from "./form";
+import { Signal } from "@preact/signals";
 
 export type SignalFormProps<T> = {
     onSubmit?: (e: SubmitEvent, signal: NestedSignal<T>) => void,
@@ -13,7 +14,9 @@ type SignalInputProps<ValueType> = {
     value?: ValueType,
     class?: string
     onChange?: (e: ChangeEvent<HTMLInputElement>) => void,
-    type?: HTMLInputTypeAttribute | undefined;
+    onKeyUp?: (e: ChangeEvent<HTMLInputElement>) => void.
+    type?: HTMLInputTypeAttribute | undefined,
+    signal?: Signal<ValueType>
 }
 type LabeledSignalInputProps<ValueType> = SignalInputProps<ValueType> & {
     label: string
