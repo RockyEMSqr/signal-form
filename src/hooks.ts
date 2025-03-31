@@ -2,10 +2,11 @@ import { useCallback, useContext, useEffect, useMemo } from "preact/hooks";
 import { SignalFormCtx } from "./context";
 import { ChangeEvent } from "preact/compat";
 import { InputProps } from "./types";
-import dlvSignal, { dset, dsetSignal } from "./utils";
+import { dlvSignal, dlvDeepSignal, dset, dsetSignal, getSignal } from "./utils";
 import dlv from 'dlv';
-import { toNestedSignal } from "./form";
+// import { toNestedSignal } from "./form";
 import { Signal, useSignal } from "@preact/signals";
+import { useDeepSignal } from "deepsignal";
 export function useSignalFormInput<T>(p: InputProps<T>) {
     return useMemo(() => {
         console.log('init hook', p.name)
@@ -15,19 +16,26 @@ export function useSignalFormInput<T>(p: InputProps<T>) {
 
         }, [[p.value]]);
 
-        // todo: Better type input signal
-        let valVal = p.value || dlvSignal(ctx.signal, p.name);
-        let inputSignal = p.signal;
 
+        let inputSignal = p.signal;
+        let valVal = p.value;
+        if (p.signal) {
+            valVal = getSignal(inputSignal, p.name);
+        } else {
+            valVal = getSignal(ctx.signal, p.name);
+        }
         if (valVal instanceof Signal) {
             inputSignal = valVal;
         } else {
-            inputSignal = useSignal(valVal);
+            // todo: never hits here
+
         }
         // dset(ctx.signal, p.name, inputSignal);
         // ctx.signal[p.name] = inputSignal;
 
-        dsetSignal(ctx.signal, p.name, inputSignal);
+        // dsetSignal(ctx.signal, p.name, inputSignal);
+        // dset(ctx.signal, '$' + p.name, inputSignal);
+
         let onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
             console.log('BOn Change, ', ctx.signal);
             inputSignal.value = e.currentTarget.value;
@@ -104,6 +112,6 @@ export function useSignalFormInput<T>(p: InputProps<T>) {
 //     }
 // }
 
-export function useNestedSignal<T extends object>(obj: T) {
-    return useMemo(() => toNestedSignal(obj), []);
-}
+// export function useNestedSignal<T extends object>(obj: T) {
+//     return useMemo(() => toNestedSignal(obj), []);
+// }

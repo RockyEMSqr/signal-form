@@ -3,28 +3,29 @@ import { useCallback, useDebugValue, useEffect, useMemo } from 'preact/hooks';
 import { Signal, useSignal } from '@preact/signals'
 import { SignalFormCtx } from './context';
 import { SignalFormProps } from './types';
+import { useDeepSignal } from 'deepsignal';
 // import { deepSignal, useDeepSignal } from 'deepsignal';
 
 //https://github.com/preactjs/signals/blob/main/docs/demos/react/nesting/index.tsx#L17
 // We may land a more comprehensive "Deep" Reactive in core,
 // since "Shallow" Reactive is trivial to implement atop Signal:
-export type NestedSignal<T> = { [K in keyof T]: Signal<T[K]> };
-export function toNestedSignal<T extends object>(obj: T) {
-    let reactive = {} as NestedSignal<T>;
-    for (let i in obj) {
-        if (typeof obj[i] == 'object') {
-            reactive[i] = toNestedSignal(obj[i])
-        } else {
-            reactive[i] = useSignal(obj[i]);
-        }
-    }
-    return reactive;
-}
-
+// export type NestedSignal<T> = { [K in keyof T]: Signal<T[K]> };
+// export function toNestedSignal<T extends object>(obj: T) {
+//     let reactive = {} as NestedSignal<T>;
+//     for (let i in obj) {
+//         if (typeof obj[i] == 'object') {
+//             reactive[i] = toNestedSignal(obj[i])
+//         } else {
+//             reactive[i] = useSignal(obj[i]);
+//         }
+//     }
+//     return reactive;
+// }
+export { useDeepSignal } from 'deepsignal'
 // I dont know if A Form parent container is a good idea but probably is
 
 export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps<T>>) => {
-    const formSignal = p.signal //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
+    const formSignal = p.signal || useDeepSignal(p.initData as T || {} as T); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
     // useEffect(() => {
     //     console.log(formSignal);
     //     if (!p.initData) {

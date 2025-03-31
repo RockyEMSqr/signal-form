@@ -2,27 +2,41 @@ import { useRef, useState, useCallback, useEffect } from 'preact/hooks'
 import preactLogo from './assets/preact.svg'
 import viteLogo from '/vite.svg'
 import './app.css'
-import { SignalForm, toNestedSignal } from '../../src/form';
+import { SignalForm } from '../../src/form';
 import { Input, LabeledInput, LabeledTextInput } from '../../src/input';
-import { useMappedSignal, useNestedSignal } from '../../src/hooks';
-import { useSignal } from '@preact/signals';
+// import { useMappedSignal, useNestedSignal } from '../../src/hooks';
+import { Signal, useSignal } from '@preact/signals';
+import { useDeepSignal } from 'deepsignal';
+import { getSignal } from '../../src/utils';
+type Person = {
+  name: string
+}
 type TestModel = {
   a: any,
   b: any,
   c: any,
+  people: Person[]
   sub: { a: number, b: number, c: number }
 }
 export function App() {
-  let submittedData = useSignal('Not submitted Yet');
+  let submittedData = useSignal<any>('Not submitted Yet');
 
   const [count, setCount] = useState(0)
   const initformData: TestModel = {
     a: 1, b: 'b', c: 'hello',
-    sub: { a: 1, b: 2, c: 3 }
+    sub: { a: 1, b: 2, c: 3 },
+    people: [{ name: 'rocky' }, { name: 'YEEEEE' }]
   };
-  let formData = useNestedSignal(initformData)
+  // let formData = useNestedSignal(initformData);
+  // let deepSignal = useDeepSignal(initformData);
+  let formData = useDeepSignal(initformData);
   let tick = useCallback(() => {
-    formData.a.value++;
+    formData.a++;
+    formData.sub.a++;
+    console.log(formData.sub);
+    // deepSignal.a++;
+    // console.log(deepSignal.sub)
+    formData.people[0].name = 'rocky' + ' ' + Date.now()
   }, [])
   useEffect(() => {
     setInterval(() => {
@@ -36,16 +50,24 @@ export function App() {
   return (
     <>
       <button onClick={e => {
+        debugger;
+        let s = getSignal(formData, 'xxxx');
+        s.value = 'Added';
+        console.log(formData.$xxxx, s)
+      }}>Put value in formData deepSignal</button>
+      <button onClick={e => {
         console.log(submittedData.value);
+        debugger;
         console.log(formData)
       }}>Console log state</button>
-      <SignalForm signal={formData} onSubmit={(e, signal) => {
-        console.log(signal, formData, formData === signal, JSON.stringify(signal));
-        let doubled = (signal.a.value * 2);
+      <SignalForm signal={formData} onSubmit={(e, data) => {
+        debugger;
+        console.log(data, formData, formData === data, JSON.stringify(data));
+        let doubled = (data.a * 2);
         console.log('doubled ', doubled);
         submittedData.value = {
           x: ';akldfs;ajdffal;akdlsf;akldsfj ' + doubled.toString(),
-          ...JSON.parse(JSON.stringify(signal))
+          ...JSON.parse(JSON.stringify(data))
 
         };
         //equal when passed the signal but doesn't rerender
@@ -56,12 +78,13 @@ export function App() {
         <Input name="a" />
         {/* <Input name="b" /> */}
         {/* <Input name="c" /> */}
-        {/* <LabeledInput label="Doesn't have initial data" name="x" /> */}
+        <LabeledInput label="Doesn't have initial data" name="xxxx" />
         {/* <LabeledTextInput label="AAAAAA" name="a" /> */}
         <LabeledTextInput label="B" name="b" />
-        <LabeledTextInput label="B" name="c" />
-
+        <LabeledTextInput label="C" name="c" />
         <LabeledTextInput label="sub.a" name="sub.a" />
+        {formData.$people?.value.map(ps => <LabeledInput signal={ps} name="name" />)}
+
         <button>Submit</button>
       </SignalForm >
       <pre>{JSON.stringify(formData, undefined, '  ')}</pre>

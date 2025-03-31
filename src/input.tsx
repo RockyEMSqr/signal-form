@@ -7,7 +7,8 @@ export const Input = (p: InputProps<string>) => {
     const { ctx, value, onChange, onKeyUp } = useSignalFormInput(p)
     // should i just {...p} the props?
     // console.log('Input render', p.name, value);
-    return <input type={p.type}
+    return <input
+        type={p.type}
         class={p.class}
         value={value}
         onChange={onChange}

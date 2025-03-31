@@ -10,5 +10,8 @@
     "preact": "^10.26.4",
     "typescript": "^5.8.2",
     "vite": "^6.2.0"
+  },
+  "dependencies": {
+    "deepsignal": "^1.6.0"
   }
 }
