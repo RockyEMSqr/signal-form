@@ -11,8 +11,10 @@ export function useSignalFormInput<T>(p: InputProps<T>) {
     return useMemo(() => {
         console.log('init hook', p.name)
         const ctx = useContext(SignalFormCtx);
+        ctx.fieldMap[p.name] = ctx.fieldMap[p.name] || useDeepSignal({ name: p.name, props: p });
+        let mapv = ctx.fieldMap[p.name]
         useEffect(() => {
-            console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', dlv(ctx.signal, p.name), typeof p.value, ctx.signal.value)
+            console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', dlv(ctx.data, p.name), typeof p.value, ctx.data.value)
 
         }, [[p.value]]);
 
@@ -21,8 +23,18 @@ export function useSignalFormInput<T>(p: InputProps<T>) {
         let valVal = p.value;
         if (p.signal) {
             valVal = getSignal(inputSignal, p.name);
+            if (valVal?.value === undefined) {
+                // if target doesn't have key, make it create it by setting something
+                //* if not in target put something in there.
+                dset(inputSignal, p.name, undefined);
+            }
         } else {
-            valVal = getSignal(ctx.signal, p.name);
+            valVal = getSignal(ctx.data, p.name);
+            // if target doesn't have key, make it create it by setting something
+            //* if not in target put something in there.
+            if (valVal?.value === undefined) {
+                dset(ctx.data, p.name, undefined);
+            }
         }
         if (valVal instanceof Signal) {
             inputSignal = valVal;
@@ -30,19 +42,18 @@ export function useSignalFormInput<T>(p: InputProps<T>) {
             // todo: never hits here
 
         }
-        // dset(ctx.signal, p.name, inputSignal);
-        // ctx.signal[p.name] = inputSignal;
 
-        // dsetSignal(ctx.signal, p.name, inputSignal);
-        // dset(ctx.signal, '$' + p.name, inputSignal);
 
+        mapv.signal = inputSignal;
         let onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-            console.log('BOn Change, ', ctx.signal);
+            console.log('BOn Change, ', ctx.data);
+            mapv.valid = p.validate ? p.validate(inputSignal?.value) : true;
             inputSignal.value = e.currentTarget.value;
+
             if (p.onChange) {
                 p.onChange(e);
             }
-            console.log('AOn Change, ', ctx.signal)
+            console.log('AOn Change, ', ctx.data)
         }, []);
         const onKeyUp = useCallback((e: ChangeEvent<HTMLInputElement>) => {
             console.log('onKeyUp', e);

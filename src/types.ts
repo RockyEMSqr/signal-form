@@ -2,10 +2,10 @@ import { RenderableProps } from "preact";
 import { ChangeEvent, HTMLInputTypeAttribute } from "preact/compat"
 // import { NestedSignal } from "./form";
 import { Signal } from "@preact/signals";
-import { DeepSignal } from "deepsignal";
+import { DeepSignal } from "./deepSignal";
 
 export type SignalFormProps<T> = {
-    onSubmit?: (e: SubmitEvent, data: DeepSignal<T>) => void,
+    onSubmit?: (e: SubmitEvent, data: DeepSignal<T>, fieldMap?: any) => void,
     initData?: Partial<T> | undefined,
     signal?: DeepSignal<T>
 };
@@ -18,6 +18,7 @@ type SignalInputProps<ValueType> = {
     onKeyUp?: (e: ChangeEvent<HTMLInputElement>) => void,
     type?: HTMLInputTypeAttribute | undefined,
     signal?: Signal<ValueType>
+    validate?: (value: string) => void
 }
 type LabeledSignalInputProps<ValueType> = SignalInputProps<ValueType> & {
     label: string

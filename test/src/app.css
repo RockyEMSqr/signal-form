@@ -29,3 +29,7 @@
 pre {
   text-align: left;
 }
+
+.invalid {
+  border: 1px solid red;
+}

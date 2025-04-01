@@ -6,7 +6,7 @@ import { SignalForm } from '../../src/form';
 import { Input, LabeledInput, LabeledTextInput } from '../../src/input';
 // import { useMappedSignal, useNestedSignal } from '../../src/hooks';
 import { Signal, useSignal } from '@preact/signals';
-import { useDeepSignal } from 'deepsignal';
+import { useDeepSignal } from '../../src/deepSignal';
 import { getSignal } from '../../src/utils';
 type Person = {
   name: string
@@ -17,6 +17,9 @@ type TestModel = {
   c: any,
   people: Person[]
   sub: { a: number, b: number, c: number }
+}
+export const Example = (p: { name: keyof TestModel }) => {
+  return <div></div>
 }
 export function App() {
   let submittedData = useSignal<any>('Not submitted Yet');
@@ -33,7 +36,7 @@ export function App() {
   let tick = useCallback(() => {
     formData.a++;
     formData.sub.a++;
-    console.log(formData.sub);
+    // console.log(formData.sub);
     // deepSignal.a++;
     // console.log(deepSignal.sub)
     formData.people[0].name = 'rocky' + ' ' + Date.now()
@@ -43,25 +46,19 @@ export function App() {
       tick();
     }, 1000);
   }, [])
-
-  submittedData.subscribe((a) => {
-    console.log(a);
-  })
   return (
     <>
       <button onClick={e => {
-        debugger;
         let s = getSignal(formData, 'xxxx');
-        s.value = 'Added';
-        console.log(formData.$xxxx, s)
+        formData.xxxx = 'XXXX';
       }}>Put value in formData deepSignal</button>
       <button onClick={e => {
         console.log(submittedData.value);
         debugger;
         console.log(formData)
       }}>Console log state</button>
-      <SignalForm signal={formData} onSubmit={(e, data) => {
-        debugger;
+      <SignalForm signal={formData} onSubmit={(e, data, fieldMap) => {
+        console.log(fieldMap)
         console.log(data, formData, formData === data, JSON.stringify(data));
         let doubled = (data.a * 2);
         console.log('doubled ', doubled);
@@ -75,16 +72,20 @@ export function App() {
         // set it to render?
         // formData.value = {...signal.value};
       }}>
-        <Input name="a" />
+        <Input name="a" class="a" />
         {/* <Input name="b" /> */}
         {/* <Input name="c" /> */}
+        <LabeledInput class="lgt5" label="L > 5" name="lengthMustBeOver5" validate={v => v?.length > 5} />
         <LabeledInput label="Doesn't have initial data" name="xxxx" />
         {/* <LabeledTextInput label="AAAAAA" name="a" /> */}
         <LabeledTextInput label="B" name="b" />
         <LabeledTextInput label="C" name="c" />
         <LabeledTextInput label="sub.a" name="sub.a" />
-        {formData.$people?.value.map(ps => <LabeledInput signal={ps} name="name" />)}
 
+        <Example name="sub.a" />
+        {formData.$people?.value.map(ps => <PersonForm signal={ps} />)}
+
+        <label><input value={formData.$a} /></label>
         <button>Submit</button>
       </SignalForm >
       <pre>{JSON.stringify(formData, undefined, '  ')}</pre>
@@ -122,4 +123,11 @@ export function App() {
       </p>
     </>
   )
+}
+
+const PersonForm = (p: { signal: any }) => {
+  return <>
+    <LabeledInput label='name' signal={p.signal} name="name" />
+    <LabeledInput label='age' signal={p.signal} name="age" />
+  </>
 }

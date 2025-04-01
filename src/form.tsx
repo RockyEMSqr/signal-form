@@ -3,7 +3,7 @@ import { useCallback, useDebugValue, useEffect, useMemo } from 'preact/hooks';
 import { Signal, useSignal } from '@preact/signals'
 import { SignalFormCtx } from './context';
 import { SignalFormProps } from './types';
-import { useDeepSignal } from 'deepsignal';
+import { useDeepSignal } from './deepSignal';
 // import { deepSignal, useDeepSignal } from 'deepsignal';
 
 //https://github.com/preactjs/signals/blob/main/docs/demos/react/nesting/index.tsx#L17
@@ -21,7 +21,6 @@ import { useDeepSignal } from 'deepsignal';
 //     }
 //     return reactive;
 // }
-export { useDeepSignal } from 'deepsignal'
 // I dont know if A Form parent container is a good idea but probably is
 
 export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps<T>>) => {
@@ -60,10 +59,26 @@ export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps
     }, [p.children])
     const onSubmit = useCallback((e: SubmitEvent) => {
         e.preventDefault();
-        p.onSubmit && p.onSubmit(e, formSignal);
+        //validate on submit. prop?
+        for (let k in ctx.fieldMap) {
+            let m = ctx.fieldMap[k];
+            if (m.props?.validate) {
+                m.valid = m.props.validate(m.signal.value);
+                if (!m.valid) {
+                    m.class = 'invalid'
+                } else {
+                    m.class = ''
+                }
+            }
+        }
+        p.onSubmit && p.onSubmit(e, formSignal, ctx.fieldMap);
     }, [])
     console.log('Signal Form rendered')
-    return (<SignalFormCtx.Provider value={({ signal: formSignal })}>
+    const ctx = {
+        data: formSignal,
+        fieldMap: {}
+    }
+    return (<SignalFormCtx.Provider value={ctx}>
         <form onSubmit={onSubmit}>
             {/* {processChildren(p.children)}
              */}
