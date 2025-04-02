@@ -1,7 +1,8 @@
 import { RenderableProps } from "preact";
-import { useSignalFormInput } from "./hooks";
+import { useGetInputId, useSignalFormInput } from "./hooks";
 import { InputProps, LabeledInputProps } from "./types";
 import { useDeepSignal } from "./deepSignal";
+import { LabelChildren } from "./label";
 
 
 export const Input = (p: InputProps<string>) => {
@@ -17,16 +18,19 @@ export const Input = (p: InputProps<string>) => {
         class={classes.join(' ')}
         value={value}
         onChange={onChange}
-        id={p.id || p.name}
+        id={p.id}
         placeholder={p.placeholder}
         onKeyUp={onKeyUp}
     />
 }
 export const LabeledInput = (p: LabeledInputProps<string>) => {
+    // todo: Type 'Element' is not assignable to type 'Element | (Element & ComponentChild)'. why?
+    // let id = useGetInputId(p)
     return <>
         <div>
-            <label for={p.id || p.name}>{p.label}</label>
-            <Input {...p} />
+            <LabelChildren {...p}>
+                <Input {...p} />
+            </LabelChildren>
         </div>
     </>
 }

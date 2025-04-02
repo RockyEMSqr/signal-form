@@ -24,4 +24,11 @@ type LabeledSignalInputProps<ValueType> = SignalInputProps<ValueType> & {
     label: string
 }
 export type InputProps<ValueType> = RenderableProps<Partial<Omit<HTMLInputElement, "value">> & SignalInputProps<ValueType>>;
+// type Primitive = string | number;
+export type LabelValue = {
+    label: string | number,
+    value: string | number
+}
+export type SelectInputProps<ValueType> = { items: LabelValue[] } & InputProps<ValueType>
 export type LabeledInputProps<ValueType> = InputProps<ValueType> & LabeledSignalInputProps<ValueType>;
+export type LabeledSelectInputProps<ValueType> = { items: LabelValue[] } & LabeledInputProps<ValueType>

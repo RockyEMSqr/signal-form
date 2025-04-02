@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './app.css'
 import { SignalForm } from '../../src/form';
 import { Input, LabeledInput, LabeledTextInput } from '../../src/input';
+import { LabeledSelectInput, SelectInput } from '../../src/select'
 // import { useMappedSignal, useNestedSignal } from '../../src/hooks';
 import { Signal, useSignal } from '@preact/signals';
 import { useDeepSignal } from '../../src/deepSignal';
@@ -43,7 +44,7 @@ export function App() {
   }, [])
   useEffect(() => {
     setInterval(() => {
-      tick();
+      // tick();
     }, 1000);
   }, [])
   return (
@@ -72,6 +73,9 @@ export function App() {
         // set it to render?
         // formData.value = {...signal.value};
       }}>
+        <LabeledSelectInput label="Pick a couple #" validate={v => v.length > 2} multiple placeholder='PlaceHolder' name='select3' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
+        <LabeledSelectInput label="Pick a #" placeholder='PlaceHolder' name='select2' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
+        inline<SelectInput placeholder='PlaceHolder' name='select1' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
         <Input name="a" class="a" />
         {/* <Input name="b" /> */}
         {/* <Input name="c" /> */}

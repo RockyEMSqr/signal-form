@@ -76,7 +76,10 @@ export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps
     console.log('Signal Form rendered')
     const ctx = {
         data: formSignal,
-        fieldMap: {}
+        fieldMap: {},
+        ctxState: useDeepSignal({
+            count: 0
+        })
     }
     return (<SignalFormCtx.Provider value={ctx}>
         <form onSubmit={onSubmit}>

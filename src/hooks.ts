@@ -1,18 +1,19 @@
 import { useCallback, useContext, useEffect, useMemo } from "preact/hooks";
 import { SignalFormCtx } from "./context";
-import { ChangeEvent } from "preact/compat";
+import { ChangeEvent, JSX, KeyboardEvent, TargetedEvent } from "preact/compat";
 import { InputProps } from "./types";
 import { dlvSignal, dlvDeepSignal, dset, dsetSignal, getSignal } from "./utils";
 import dlv from 'dlv';
 // import { toNestedSignal } from "./form";
 import { Signal, useSignal } from "@preact/signals";
 import { useDeepSignal } from "deepsignal";
-export function useSignalFormInput<T>(p: InputProps<T>) {
+export function useSignalFormInput<T, InputType extends EventTarget>(p: InputProps<T>) {
     return useMemo(() => {
         console.log('init hook', p.name)
         const ctx = useContext(SignalFormCtx);
-        ctx.fieldMap[p.name] = ctx.fieldMap[p.name] || useDeepSignal({ name: p.name, props: p });
-        let mapv = ctx.fieldMap[p.name]
+        // ctx.fieldMap[p.name] = ctx.fieldMap[p.name] || useDeepSignal({ name: p.name, props: p });
+        // let mapv = ctx.fieldMap[p.name]
+        // let mapv = useInputState(p.name)
         useEffect(() => {
             console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', dlv(ctx.data, p.name), typeof p.value, ctx.data.value)
 
@@ -44,10 +45,10 @@ export function useSignalFormInput<T>(p: InputProps<T>) {
         }
 
 
-        mapv.signal = inputSignal;
-        let onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-            console.log('BOn Change, ', ctx.data);
-            mapv.valid = p.validate ? p.validate(inputSignal?.value) : true;
+        // mapv.signal = inputSignal;
+        let onChange = useCallback((e: TargetedEvent<InputType>) => {
+            console.log('BOn Change, ', e, ctx.data);
+            // mapv.valid = p.validate ? p.validate(inputSignal?.value) : true;
             inputSignal.value = e.currentTarget.value;
 
             if (p.onChange) {
@@ -55,22 +56,38 @@ export function useSignalFormInput<T>(p: InputProps<T>) {
             }
             console.log('AOn Change, ', ctx.data)
         }, []);
-        const onKeyUp = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        const onKeyUp = useCallback((e: KeyboardEvent<InputType>) => {
             console.log('onKeyUp', e);
             inputSignal.value = e.currentTarget.value;
             p.onKeyUp && p.onKeyUp(e);
-        }, [])
+        }, []);
+
+        if (!p.id) {
+            p.id = `${p.id} ${ctx.ctxState.count++}`;
+        }
         let retVal = {
             ctx,
             // signal: thisInputSignal,
             //if not a signal change value to a signal?
             value: inputSignal,
             onChange,
-            onKeyUp
+            onKeyUp,
+            inputState: {} //mapv
         };
         console.log('useSignalFormInput', retVal);
         return retVal;
     }, []);
+}
+export function useGetInputId(p: { id?: string }) {
+    // cuasing overflow probably cause it renders everything that uses count signal, maybe?
+    // const ctx = useContext(SignalFormCtx);
+    // return ctx.ctxState.count++;
+}
+export function useInputState(name: string) {
+    const ctx = useContext(SignalFormCtx);
+    ctx.fieldMap[name] = ctx.fieldMap[name] || useDeepSignal({ name: name });
+    let mapv = ctx.fieldMap[name];
+    return mapv;
 }
 // export const ______useSignalFormInput =
 //     useCallback(<T>(p: InputProps<T>) => {
