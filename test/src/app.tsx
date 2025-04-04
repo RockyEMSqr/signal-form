@@ -3,8 +3,8 @@ import preactLogo from './assets/preact.svg'
 import viteLogo from '/vite.svg'
 import './app.css'
 import { SignalForm } from '../../src/form';
-import { Input, LabeledInput, LabeledTextInput } from '../../src/input';
-import { LabeledSelectInput, SelectInput } from '../../src/select'
+import { DateTimeInput, Input, TextInput } from '../../src';
+import { SelectInput } from '../../src/inputs/select'
 // import { useMappedSignal, useNestedSignal } from '../../src/hooks';
 import { Signal, useSignal } from '@preact/signals';
 import { useDeepSignal } from '../../src/deepSignal';
@@ -17,10 +17,26 @@ type TestModel = {
   b: any,
   c: any,
   people: Person[]
-  sub: { a: number, b: number, c: number }
+  sub: { a: number, b: number, c: number },
+  xxxx?: any,
+  datetime?: Date | string
 }
-export const Example = (p: { name: keyof TestModel }) => {
-  return <div></div>
+type DeepKeys<T> = T extends object
+  ? {
+    [K in keyof T]-?: K extends string
+    ? | K
+    | `${K}.${DeepKeys<T[K]>}`
+    : never;
+  }[keyof T]
+  : never;
+export const Example = (p: { name: DeepKeys<TestModel> }) => {
+  return <div>{p.name}</div>
+}
+export const PrintJSON = ({ what }: any) => {
+  return <details open>
+    <summary>JSON</summary>
+    <pre>{JSON.stringify(what, null, '  ')}</pre>
+  </details>
 }
 export function App() {
   let submittedData = useSignal<any>('Not submitted Yet');
@@ -29,12 +45,15 @@ export function App() {
   const initformData: TestModel = {
     a: 1, b: 'b', c: 'hello',
     sub: { a: 1, b: 2, c: 3 },
-    people: [{ name: 'rocky' }, { name: 'YEEEEE' }]
+    people: [{ name: 'rocky' }, { name: 'YEEEEE' }],
+    select3: [1, 2, 3],
+    datetime: new Date()
   };
   // let formData = useNestedSignal(initformData);
   // let deepSignal = useDeepSignal(initformData);
   let formData = useDeepSignal(initformData);
   let tick = useCallback(() => {
+    console.log(new Date(), 'tick')
     formData.a++;
     formData.sub.a++;
     // console.log(formData.sub);
@@ -42,10 +61,12 @@ export function App() {
     // console.log(deepSignal.sub)
     formData.people[0].name = 'rocky' + ' ' + Date.now()
   }, [])
+
+  const noFormData = useDeepSignal<any>({});
   useEffect(() => {
     setInterval(() => {
-      // tick();
-    }, 1000);
+      tick();
+    }, 10000);
   }, [])
   return (
     <>
@@ -58,7 +79,17 @@ export function App() {
         debugger;
         console.log(formData)
       }}>Console log state</button>
-      <SignalForm signal={formData} onSubmit={(e, data, fieldMap) => {
+
+      <div>
+        <h1 id="noform">No Form</h1>
+        <DateTimeInput label="no Name" value={formData.datetime} onChange={(e, v) => {
+          noFormData.a = v;
+        }} />
+        <PrintJSON what={noFormData} />
+      </div>
+
+      <h1>Form</h1>
+      <SignalForm signal={formData} onSubmit={(_e, data, fieldMap) => {
         console.log(fieldMap)
         console.log(data, formData, formData === data, JSON.stringify(data));
         let doubled = (data.a * 2);
@@ -73,22 +104,22 @@ export function App() {
         // set it to render?
         // formData.value = {...signal.value};
       }}>
-        <LabeledSelectInput label="Pick a couple #" validate={v => v.length > 2} multiple placeholder='PlaceHolder' name='select3' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
-        <LabeledSelectInput label="Pick a #" placeholder='PlaceHolder' name='select2' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
+        <SelectInput label="Pick a couple #" validate={v => v.length > 2} multiple placeholder='PlaceHolder' name='select3' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
+        <SelectInput label="Pick a #" placeholder='PlaceHolder' name='select2' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
         inline<SelectInput placeholder='PlaceHolder' name='select1' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
-        <Input name="a" class="a" />
+        <Input<TestModel> name="" class="a" />
         {/* <Input name="b" /> */}
         {/* <Input name="c" /> */}
-        <LabeledInput class="lgt5" label="L > 5" name="lengthMustBeOver5" validate={v => v?.length > 5} />
-        <LabeledInput label="Doesn't have initial data" name="xxxx" />
-        {/* <LabeledTextInput label="AAAAAA" name="a" /> */}
-        <LabeledTextInput label="B" name="b" />
-        <LabeledTextInput label="C" name="c" />
-        <LabeledTextInput label="sub.a" name="sub.a" />
+        <Input class="lgt5" label="L > 5" name="lengthMustBeOver5" validate={v => v?.length > 5} />
+        <Input label="Doesn't have initial data" name="xxxx" />
+        {/* <TextInput label="AAAAAA" name="a" /> */}
+        <TextInput label="B" name="b" />
+        <TextInput label="C" name="c" />
+        <TextInput label="sub.a" name="sub.a" />
 
         <Example name="sub.a" />
         {formData.$people?.value.map(ps => <PersonForm signal={ps} />)}
-
+        <DateTimeInput />
         <label><input value={formData.$a} /></label>
         <button>Submit</button>
       </SignalForm >
@@ -131,7 +162,7 @@ export function App() {
 
 const PersonForm = (p: { signal: any }) => {
   return <>
-    <LabeledInput label='name' signal={p.signal} name="name" />
-    <LabeledInput label='age' signal={p.signal} name="age" />
+    <Input label='name' signal={p.signal} name="name" />
+    <Input label='age' signal={p.signal} name="age" />
   </>
 }

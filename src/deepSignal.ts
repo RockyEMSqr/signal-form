@@ -115,7 +115,7 @@ const objectHandlers = {
                 objToIterable.get(target).value++;
             }
             if (isNew && !objToIterable.has(target)) {
-                debugger;
+                // debugger;
             }
             if (Array.isArray(target) && signals.has("length"))
                 signals.get("length").value = target.length;

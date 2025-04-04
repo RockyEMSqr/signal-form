@@ -1,70 +1,80 @@
 import { useCallback, useContext, useEffect, useMemo } from "preact/hooks";
-import { SignalFormCtx } from "./context";
-import { ChangeEvent, JSX, KeyboardEvent, TargetedEvent } from "preact/compat";
-import { InputProps } from "./types";
-import { dlvSignal, dlvDeepSignal, dset, dsetSignal, getSignal } from "./utils";
+import { SignalFormCtx, SignalFormFieldState } from "./context";
+import { KeyboardEvent } from "preact/compat";
+import { GenericEvent, InputProps } from "./types";
+import { dset, getSignal } from "./utils";
 import dlv from 'dlv';
 // import { toNestedSignal } from "./form";
 import { Signal, useSignal } from "@preact/signals";
-import { useDeepSignal } from "deepsignal";
-export function useSignalFormInput<T, InputType extends EventTarget>(p: InputProps<T>) {
+import { useDeepSignal } from "./deepSignal";
+export function useSignalFormInput<T>(p: InputProps<T>) {
     return useMemo(() => {
-        console.log('init hook', p.name)
         const ctx = useContext(SignalFormCtx);
-        // ctx.fieldMap[p.name] = ctx.fieldMap[p.name] || useDeepSignal({ name: p.name, props: p });
-        // let mapv = ctx.fieldMap[p.name]
+        let mapv = {} as SignalFormFieldState<T>;
+        if (p.name) {
+            ctx.fieldMap[p.name] = ctx.fieldMap[p.name] || useDeepSignal({ name: p.name, props: p });
+            mapv = ctx.fieldMap[p.name]
+        }
         // let mapv = useInputState(p.name)
         useEffect(() => {
-            console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', dlv(ctx.data, p.name), typeof p.value, ctx.data.value)
+            console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', dlv(ctx.data, p.name!), typeof p.value, ctx.data.value)
 
         }, [[p.value]]);
 
-
-        let inputSignal = p.signal;
-        let valVal = p.value;
-        if (p.signal) {
-            valVal = getSignal(inputSignal, p.name);
-            if (valVal?.value === undefined) {
-                // if target doesn't have key, make it create it by setting something
-                //* if not in target put something in there.
-                dset(inputSignal, p.name, undefined);
-            }
-        } else {
-            valVal = getSignal(ctx.data, p.name);
-            // if target doesn't have key, make it create it by setting something
-            //* if not in target put something in there.
-            if (valVal?.value === undefined) {
-                dset(ctx.data, p.name, undefined);
-            }
-        }
-        if (valVal instanceof Signal) {
-            inputSignal = valVal;
-        } else {
-            // todo: never hits here
-
-        }
+        let inputSignal = useGetInputSignal<T>(p);
+        // let inputSignal = p.signal;
+        // let valVal = p.value;
+        // if (p.signal) {
+        //     inputSignal = getSignal(inputSignal, p.name);
+        //     if (inputSignal?.value === undefined) {
+        //         // if target doesn't have key, make it create it by setting something
+        //         //* if not in target put something in there.
+        //         dset(inputSignal, p.name, undefined);
+        //     }
+        // } else {
+        //     inputSignal = getSignal(ctx.data, p.name);
+        //     // if target doesn't have key, make it create it by setting something
+        //     //* if not in target put something in there.
+        //     if (inputSignal?.value === undefined) {
+        //         dset(ctx.data, p.name, undefined);
+        //     }
+        // }
+        // if (valVal instanceof Signal) {
+        //     inputSignal = valVal;
+        // }
 
 
-        // mapv.signal = inputSignal;
-        let onChange = useCallback((e: TargetedEvent<InputType>) => {
+        mapv.inputSignal = inputSignal!; // <-- 
+        let onChange = useCallback((e: GenericEvent<HTMLInputElement>) => {
             console.log('BOn Change, ', e, ctx.data);
-            // mapv.valid = p.validate ? p.validate(inputSignal?.value) : true;
-            inputSignal.value = e.currentTarget.value;
+            mapv.valid = p.validate ? p.validate(inputSignal?.value) : true;
+            if (inputSignal) {
+                inputSignal.value = e.currentTarget.value as T //TODO: Cast to type T;
+            }
 
             if (p.onChange) {
                 p.onChange(e);
             }
             console.log('AOn Change, ', ctx.data)
         }, []);
-        const onKeyUp = useCallback((e: KeyboardEvent<InputType>) => {
+        const onKeyUp = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
             console.log('onKeyUp', e);
-            inputSignal.value = e.currentTarget.value;
+            if (inputSignal) {
+                inputSignal.value = e.currentTarget.value as T;
+            }
             p.onKeyUp && p.onKeyUp(e);
         }, []);
 
         if (!p.id) {
             p.id = `${p.id} ${ctx.ctxState.count++}`;
         }
+        const validate = useCallback(() => {
+            if (p.validate) {
+                return p.validate(inputSignal?.value);
+            }
+            return true;
+        }, [inputSignal]);
+        mapv.validate = validate;
         let retVal = {
             ctx,
             // signal: thisInputSignal,
@@ -72,23 +82,55 @@ export function useSignalFormInput<T, InputType extends EventTarget>(p: InputPro
             value: inputSignal,
             onChange,
             onKeyUp,
-            inputState: {} //mapv
+            inputState: mapv
         };
         console.log('useSignalFormInput', retVal);
         return retVal;
     }, []);
 }
-export function useGetInputId(p: { id?: string }) {
-    // cuasing overflow probably cause it renders everything that uses count signal, maybe?
-    // const ctx = useContext(SignalFormCtx);
-    // return ctx.ctxState.count++;
-}
-export function useInputState(name: string) {
+export function useGetInputSignal<T>(p: InputProps<T>) {
     const ctx = useContext(SignalFormCtx);
-    ctx.fieldMap[name] = ctx.fieldMap[name] || useDeepSignal({ name: name });
-    let mapv = ctx.fieldMap[name];
-    return mapv;
+    let inputSignal = p.signal;
+    let valVal = p.value;
+    if (p.name) {
+        if (p.signal) {
+            inputSignal = getSignal(inputSignal, p.name);
+            if (inputSignal?.value === undefined) {
+                // if target doesn't have key, make it create it by setting something
+                //* if not in target put something in there.
+                dset(inputSignal, p.name, undefined);
+            }
+        } else {
+            inputSignal = getSignal(ctx.data, p.name);
+            // if target doesn't have key, make it create it by setting something
+            //* if not in target put something in there.
+            if (inputSignal?.value === undefined) {
+                dset(ctx.data, p.name, undefined);
+            }
+        }
+    }
+    if (valVal instanceof Signal) {
+        inputSignal = valVal;
+    }
+    if (!inputSignal) {
+        inputSignal = useSignal<T>(valVal!);
+    }
+    return inputSignal;
+
+
+
 }
+// export function useGetInputId(p: { id?: string }) {
+//     // cuasing overflow probably cause it renders everything that uses count signal, maybe?
+//     // const ctx = useContext(SignalFormCtx);
+//     // return ctx.ctxState.count++;
+// }
+// export function useInputState(name: string) {
+//     const ctx = useContext(SignalFormCtx);
+//     ctx.fieldMap[name] = ctx.fieldMap[name] || useDeepSignal({ name: name });
+//     let mapv = ctx.fieldMap[name];
+//     return mapv;
+// }
 // export const ______useSignalFormInput =
 //     useCallback(<T>(p: InputProps<T>) => {
 //         console.log('init hook', p.name)

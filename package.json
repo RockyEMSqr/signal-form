@@ -6,12 +6,14 @@
     "@preact/preset-vite": "^2.10.1",
     "@preact/signals": "^2.0.2",
     "@types/dlv": "^1.1.5",
+    "@types/luxon": "^3.6.2",
     "dlv": "^1.1.3",
     "preact": "^10.26.4",
     "typescript": "^5.8.2",
     "vite": "^6.2.0"
   },
   "dependencies": {
-    "deepsignal": "^1.6.0"
+    "deepsignal": "^1.6.0",
+    "luxon": "^3.6.1"
   }
 }

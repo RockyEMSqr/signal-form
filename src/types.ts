@@ -10,25 +10,31 @@ export type SignalFormProps<T> = {
     signal?: DeepSignal<T>
 };
 
-type SignalInputProps<ValueType> = {
-    name: string,//keyof ContainingObjType,
+type DeepKeys<T> = T extends object
+    ? {
+        [K in keyof T]-?: K extends string
+        ? | K
+        | `${K}.${DeepKeys<T[K]>}`
+        : never;
+    }[keyof T]
+    : never;
+type SignalInputProps<ValueType = string, ContainingType = never> = {
+    name?: DeepKeys<{ a: number, b: number, c: number }>//ContainingType extends object ? DeepKeys<ContainingType> : string//ContainingType extends never ? string : DeepKeys<ContainingType>,//keyof ContainingObjType,
     value?: ValueType,
     class?: string
-    onChange?: (e: ChangeEvent<HTMLInputElement>) => void,
+    onChange?: (e: ChangeEvent<HTMLInputElement>, v?: any) => void,
     onKeyUp?: (e: ChangeEvent<HTMLInputElement>) => void,
     type?: HTMLInputTypeAttribute | undefined,
     signal?: Signal<ValueType>
-    validate?: (value: string) => void
+    validate?: (value: any) => boolean,
+    label?: string
 }
-type LabeledSignalInputProps<ValueType> = SignalInputProps<ValueType> & {
-    label: string
-}
-export type InputProps<ValueType> = RenderableProps<Partial<Omit<HTMLInputElement, "value">> & SignalInputProps<ValueType>>;
+export type InputProps<ValueType = string, ContainingType = {}> = RenderableProps<Partial<Omit<HTMLInputElement, "value">> & SignalInputProps<ValueType, ContainingType>>;
 // type Primitive = string | number;
 export type LabelValue = {
     label: string | number,
     value: string | number
 }
 export type SelectInputProps<ValueType> = { items: LabelValue[] } & InputProps<ValueType>
-export type LabeledInputProps<ValueType> = InputProps<ValueType> & LabeledSignalInputProps<ValueType>;
-export type LabeledSelectInputProps<ValueType> = { items: LabelValue[] } & LabeledInputProps<ValueType>
+
+export type GenericEvent<TargetType extends Element> = Event & { currentTarget: TargetType };

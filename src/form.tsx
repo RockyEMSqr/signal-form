@@ -1,7 +1,7 @@
 import { ComponentChild, ComponentChildren, RenderableProps } from 'preact';
 import { useCallback, useDebugValue, useEffect, useMemo } from 'preact/hooks';
 import { Signal, useSignal } from '@preact/signals'
-import { SignalFormCtx } from './context';
+import { SignalFormContextData, SignalFormCtx } from './context';
 import { SignalFormProps } from './types';
 import { useDeepSignal } from './deepSignal';
 // import { deepSignal, useDeepSignal } from 'deepsignal';
@@ -38,43 +38,48 @@ export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps
     //     }
     //     console.log(formSignal);
     // }, [p.initData])
-    const processChild = (child: ComponentChild) => {
-        if (typeof child == 'function') {
-            return child(formSignal);
-        }
-        return child;
+    // const processChild = (child: ComponentChild) => {
+    //     if (typeof child == 'function') {
+    //         return child(formSignal);
+    //     }
+    //     return child;
 
-    };
-    const processChildren = useCallback((children: ComponentChildren) => {
-        if (Array.isArray(children)) {
-            let retVal = [];
-            for (let child of children) {
-                retVal.push(processChild(child))
-            }
-            return retVal;
-        } else {
-            return processChild(children)
-        }
+    // };
+    // const processChildren = useCallback((children: ComponentChildren) => {
+    //     if (Array.isArray(children)) {
+    //         let retVal = [];
+    //         for (let child of children) {
+    //             retVal.push(processChild(child))
+    //         }
+    //         return retVal;
+    //     } else {
+    //         return processChild(children)
+    //     }
 
-    }, [p.children])
+    // }, [p.children])
     const onSubmit = useCallback((e: SubmitEvent) => {
         e.preventDefault();
         //validate on submit. prop?
         for (let k in ctx.fieldMap) {
             let m = ctx.fieldMap[k];
-            if (m.props?.validate) {
-                m.valid = m.props.validate(m.signal.value);
-                if (!m.valid) {
-                    m.class = 'invalid'
-                } else {
-                    m.class = ''
-                }
+            m.valid = m.validate();
+            if (!m.valid) {
+                m.class = 'invalid'
+            } else {
+                m.class = ''
             }
+            // if (m.props?.validate) {
+            //     m.valid = m.props.validate(m.inputSignal.value);
+            //     if (!m.valid) {
+            //         m.class = 'invalid'
+            //     } else {
+            //         m.class = ''
+            //     }
+            // }
         }
         p.onSubmit && p.onSubmit(e, formSignal, ctx.fieldMap);
-    }, [])
-    console.log('Signal Form rendered')
-    const ctx = {
+    }, []);
+    const ctx: SignalFormContextData<{}> = {
         data: formSignal,
         fieldMap: {},
         ctxState: useDeepSignal({
