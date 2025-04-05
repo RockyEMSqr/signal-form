@@ -7,7 +7,7 @@ import dlv from 'dlv';
 // import { toNestedSignal } from "./form";
 import { Signal, useSignal } from "@preact/signals";
 import { useDeepSignal } from "./deepSignal";
-export function useSignalFormInput<T>(p: InputProps<T>) {
+export function useSignalFormInput<T, CO>(p: InputProps<T,CO>) {
     return useMemo(() => {
         const ctx = useContext(SignalFormCtx);
         let mapv = {} as SignalFormFieldState<T>;

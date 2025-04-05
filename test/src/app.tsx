@@ -66,7 +66,7 @@ export function App() {
   useEffect(() => {
     setInterval(() => {
       tick();
-    }, 10000);
+    }, 1000);
   }, [])
   return (
     <>
@@ -107,15 +107,15 @@ export function App() {
         <SelectInput label="Pick a couple #" validate={v => v.length > 2} multiple placeholder='PlaceHolder' name='select3' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
         <SelectInput label="Pick a #" placeholder='PlaceHolder' name='select2' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
         inline<SelectInput placeholder='PlaceHolder' name='select1' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
-        <Input<TestModel> name="" class="a" />
+        <Input<TestModel> name="a" class="a" />
         {/* <Input name="b" /> */}
         {/* <Input name="c" /> */}
         <Input class="lgt5" label="L > 5" name="lengthMustBeOver5" validate={v => v?.length > 5} />
-        <Input label="Doesn't have initial data" name="xxxx" />
+        <Input label="Doesn't have initial data" name="asdf" />
         {/* <TextInput label="AAAAAA" name="a" /> */}
         <TextInput label="B" name="b" />
-        <TextInput label="C" name="c" />
-        <TextInput label="sub.a" name="sub.a" />
+        <TextInput<TestModel> label="C" name="c" />
+        <TextInput<TestModel> label="sub.a" name="sub.a" />
 
         <Example name="sub.a" />
         {formData.$people?.value.map(ps => <PersonForm signal={ps} />)}
