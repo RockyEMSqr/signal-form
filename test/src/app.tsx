@@ -113,7 +113,7 @@ export function App() {
         <Input class="lgt5" label="L > 5" name="lengthMustBeOver5" validate={v => v?.length > 5} />
         <Input label="Doesn't have initial data" name="asdf" />
         {/* <TextInput label="AAAAAA" name="a" /> */}
-        <TextInput label="B" name="b" />
+        <TextInput<TestModel> label="B" name="a" />
         <TextInput<TestModel> label="C" name="c" />
         <TextInput<TestModel> label="sub.a" name="sub.a" />
 
