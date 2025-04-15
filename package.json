@@ -1,4 +1,6 @@
 {
+  "name": "signal-form",
+  "version": "0.0.1",
   "scripts": {
     "test": "pushd ./test ; vite"
   },
