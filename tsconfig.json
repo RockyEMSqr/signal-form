@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2019",
     "useDefineForClassFields": true,
     "module": "ESNext",
+    "outDir": "./dist",
+    "declaration": true,
     "lib": [
       "ES2020",
       "DOM",
@@ -19,10 +21,10 @@
     },
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    // "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true,
+    // "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
     /* Linting */
@@ -31,5 +33,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
-  }
+  },
+  "include": [
+    "src/**/*"
+  ]
 }

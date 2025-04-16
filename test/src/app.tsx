@@ -104,10 +104,27 @@ export function App() {
         // set it to render?
         // formData.value = {...signal.value};
       }}>
+
+
+
+        <TextInput<TestModel> label="sub.a" name="sub.a" />
+
+        <label>Sub a<input type="text" onChange={e=>formData.sub.a = e.currentTarget.value} value={formData.sub.a}/></label>
+
+
+
+
+
         <SelectInput label="Pick a couple #" validate={v => v.length > 2} multiple placeholder='PlaceHolder' name='select3' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
         <SelectInput label="Pick a #" placeholder='PlaceHolder' name='select2' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
         inline<SelectInput placeholder='PlaceHolder' name='select1' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
-        <Input<TestModel> name="a" class="a" />
+
+
+
+
+        <Input<TestModel> name="sub.c" class="a" />
+
+
         {/* <Input name="b" /> */}
         {/* <Input name="c" /> */}
         <Input class="lgt5" label="L > 5" name="lengthMustBeOver5" validate={v => v?.length > 5} />
@@ -115,7 +132,7 @@ export function App() {
         {/* <TextInput label="AAAAAA" name="a" /> */}
         <TextInput<TestModel> label="B" name="a" />
         <TextInput<TestModel> label="C" name="c" />
-        <TextInput<TestModel> label="sub.a" name="sub.a" />
+
 
         <Example name="sub.a" />
         {formData.$people?.value.map(ps => <PersonForm signal={ps} />)}
