@@ -117,7 +117,10 @@ export function useGetInputSignal<T>(p: InputProps<T>) {
 
         // fixes bug#1
         // set the input signal in the data
-        dset(ctx.data, p.name, inputSignal);
+        if(p.name){
+            //fixes bug #2 only set if it has a name
+            dset(ctx.data, p.name, inputSignal);
+        }
     }
     return inputSignal;
 

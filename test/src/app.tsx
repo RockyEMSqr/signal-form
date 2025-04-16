@@ -79,8 +79,8 @@ export function App() {
       }}>
        <TextInput name="name.first" />
        <TextInput name="name.first" />
-       <TextInput name="name.last" /> 
-       <TextInput name="name.last" /> 
+       <TextInput name="name.first" />
+
       </SignalForm>
 
     </div>
