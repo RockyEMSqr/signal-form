@@ -13,7 +13,7 @@ export function useSignalFormInput<T, CO>(p: InputProps<T,CO>) {
         let mapv = {} as SignalFormFieldState<T>;
         if (p.name) {
             ctx.fieldMap[p.name] = ctx.fieldMap[p.name] || useDeepSignal({ name: p.name, props: p });
-            mapv = ctx.fieldMap[p.name]
+            mapv = ctx.fieldMap[p.name];
         }
         // let mapv = useInputState(p.name)
         useEffect(() => {
@@ -113,7 +113,11 @@ export function useGetInputSignal<T>(p: InputProps<T>) {
         inputSignal = valVal;
     }
     if (!inputSignal) {
-        inputSignal = useSignal<T>(valVal!);
+        inputSignal = useSignal<T>(valVal || '' as any);
+
+        // fixes bug#1
+        // set the input signal in the data
+        dset(ctx.data, p.name, inputSignal);
     }
     return inputSignal;
 

@@ -106,7 +106,10 @@ export function useGetInputSignal(p) {
         inputSignal = valVal;
     }
     if (!inputSignal) {
-        inputSignal = useSignal(valVal);
+        inputSignal = useSignal(valVal || '');
+        // fixes bug#1
+        // set the input signal in the data
+        dset(ctx.data, p.name, inputSignal);
     }
     return inputSignal;
 }

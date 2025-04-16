@@ -19,7 +19,8 @@ type TestModel = {
   people: Person[]
   sub: { a: number, b: number, c: number },
   xxxx?: any,
-  datetime?: Date | string
+  datetime?: Date | string,
+  name:{first:string, last:string}
 }
 type DeepKeys<T> = T extends object
   ? {
@@ -47,7 +48,7 @@ export function App() {
     sub: { a: 1, b: 2, c: 3 },
     people: [{ name: 'rocky' }, { name: 'YEEEEE' }],
     select3: [1, 2, 3],
-    datetime: new Date()
+    datetime: new Date(),
   };
   // let formData = useNestedSignal(initformData);
   // let deepSignal = useDeepSignal(initformData);
@@ -70,6 +71,19 @@ export function App() {
   }, [])
   return (
     <>
+
+    <div>
+      <h1>Bug #1</h1>
+      <SignalForm onSubmit={(e,data)=>{
+        console.log(data)
+      }}>
+       <TextInput name="name.first" />
+       <TextInput name="name.first" />
+       <TextInput name="name.last" /> 
+       <TextInput name="name.last" /> 
+      </SignalForm>
+
+    </div>
       <button onClick={e => {
         let s = getSignal(formData, 'xxxx');
         formData.xxxx = 'XXXX';
