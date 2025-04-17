@@ -20,8 +20,8 @@ type TestModel = {
   sub: { a: number, b: number, c: number },
   xxxx?: any,
   datetime?: Date | string,
-  name:{first:string, last:string}
-  testModel:TestModel
+  name: { first: string, last: string }
+  testModel: TestModel
 }
 type DeepKeys<T> = T extends object
   ? {
@@ -73,18 +73,18 @@ export function App() {
   return (
     <>
 
-    <div>
-      <h1>Bug #1</h1>
-      <SignalForm onSubmit={(e,data)=>{
-        console.log(data)
-      }}>
-       <TextInput name="name.first" />
-       <TextInput name="name.first" />
-       <TextInput name="name.first" />
+      <div>
+        <h1>Bug #1</h1>
+        <SignalForm onSubmit={(e, data) => {
+          console.log(data)
+        }}>
+          <TextInput name="name.first" />
+          <TextInput name="name.first" />
+          <TextInput name="name.first" />
 
-      </SignalForm>
+        </SignalForm>
 
-    </div>
+      </div>
       <button onClick={e => {
         let s = getSignal(formData, 'xxxx');
         formData.xxxx = 'XXXX';
@@ -122,9 +122,9 @@ export function App() {
 
 
 
-        <TextInput<TestModel> label="sub.a" name="sub.a" />
+        <TextInput<TestModel> label="testModel.testModel.testModel.sub.b" name="testModel.testModel.testModel.sub.b" />
 
-        <label>Sub a<input type="text" onChange={e=>formData.sub.a = e.currentTarget.value} value={formData.sub.a}/></label>
+        <label>Sub a<input type="text" onChange={e => formData.sub.a = e.currentTarget.value} value={formData.sub.a} /></label>
 
 
 
@@ -137,7 +137,7 @@ export function App() {
 
 
 
-        <Input<TestModel> name="testModel" class="a" />
+        <Input<TestModel> name="testModel.datetime" class="a" />
 
 
         {/* <Input name="b" /> */}
@@ -145,7 +145,7 @@ export function App() {
         <Input class="lgt5" label="L > 5" name="lengthMustBeOver5" validate={v => v?.length > 5} />
         <Input label="Doesn't have initial data" name="asdf" />
         {/* <TextInput label="AAAAAA" name="a" /> */}
-        <TextInput<TestModel> label="B" name="a" />
+        <TextInput<TestModel> label="B" name="sub" />
         <TextInput<TestModel> label="C" name="testModel" />
 
 

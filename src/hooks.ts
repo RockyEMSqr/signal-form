@@ -7,7 +7,7 @@ import dlv from 'dlv';
 // import { toNestedSignal } from "./form";
 import { Signal, useSignal } from "@preact/signals";
 import { useDeepSignal } from "./deepSignal";
-export function useSignalFormInput<T, CO extends object>(p: InputProps<T,CO>) {
+export function useSignalFormInput<T, CO>(p: InputProps<T, CO>) {
     return useMemo(() => {
         const ctx = useContext(SignalFormCtx);
         let mapv = {} as SignalFormFieldState<T>;
@@ -21,7 +21,7 @@ export function useSignalFormInput<T, CO extends object>(p: InputProps<T,CO>) {
 
         }, [[p.value]]);
 
-        let inputSignal = useGetInputSignal<T,CO>(p);
+        let inputSignal = useGetInputSignal<T, CO>(p);
         // let inputSignal = p.signal;
         // let valVal = p.value;
         // if (p.signal) {
@@ -88,7 +88,7 @@ export function useSignalFormInput<T, CO extends object>(p: InputProps<T,CO>) {
         return retVal;
     }, []);
 }
-export function useGetInputSignal<T, CO extends object>(p: InputProps<T, CO>) {
+export function useGetInputSignal<T, CO>(p: InputProps<T, CO>) {
     const ctx = useContext(SignalFormCtx);
     let inputSignal = p.signal;
     let valVal = p.value;
@@ -117,7 +117,7 @@ export function useGetInputSignal<T, CO extends object>(p: InputProps<T, CO>) {
 
         // fixes bug#1
         // set the input signal in the data
-        if(p.name){
+        if (p.name) {
             //fixes bug #2 only set if it has a name
             dset(ctx.data, p.name, inputSignal);
         }
