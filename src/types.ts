@@ -254,15 +254,15 @@ type DotNestedKeysInternal<T, Depth extends number = 3> = Depth extends 0
   ? ''
   : T extends never
   ? string
-  : (
-    T extends object
-    ? {
-      [K in Exclude<keyof T, symbol>]: `${K}${DotPrefix<
-        DotNestedKeysInternal<T[K], Subtract<Depth, 1>>
-      >}`
-    }[Exclude<keyof T, symbol>]
-    : string
-  ) extends infer D
+  : T extends object
+  ? {
+    [K in keyof T]: K extends symbol
+    ? never
+    : T[K] extends object
+    ? `${K}${DotPrefix<DotNestedKeysInternal<T[K], Subtract<Depth, 1>>>}`
+    : `${K}`
+  }[keyof T]
+  : string extends infer D
   ? Extract<D, string>
   : never;
 

@@ -132,12 +132,12 @@ export function App() {
 
         <SelectInput label="Pick a couple #" validate={v => v.length > 2} multiple placeholder='PlaceHolder' name='select3' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
         <SelectInput label="Pick a #" placeholder='PlaceHolder' name='select2' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
-        inline<SelectInput placeholder='PlaceHolder' name='select1' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
+        inline<SelectInput placeholder='PlaceHolder' name='no' items={[1, 2, 3, 4, 5, 6, 7, 8, 9].map(x => ({ label: x, value: x }))} />
 
 
 
 
-        <Input<TestModel> name="testModel.datetime" class="a" />
+        <Input<TestModel> name="testModel.name.first" class="a" />
 
 
         {/* <Input name="b" /> */}
