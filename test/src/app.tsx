@@ -136,7 +136,7 @@ export function App() {
 
 
 
-        <Input<TestModel> name="sub.c" class="a" />
+        <Input<TestModel> name="sub" class="a" />
 
 
         {/* <Input name="b" /> */}

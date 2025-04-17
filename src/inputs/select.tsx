@@ -2,7 +2,7 @@ import { TargetedEvent, useCallback } from "preact/compat";
 import { useSignalFormInput } from "../hooks";
 import { GenericEvent, SelectInputProps } from "../types";
 
-export function SelectInput<ContainingType>(p: SelectInputProps<string | string[], ContainingType>){
+export function SelectInput<ContainingType extends object>(p: SelectInputProps<string | string[], ContainingType>){
 // export const SelectInput = (p: SelectInputProps<string>) => {
     const { ctx, value, onChange, onKeyUp, inputState } = useSignalFormInput<string | string[], ContainingType>(p)
     // should i just {...p} the props?
