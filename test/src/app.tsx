@@ -21,6 +21,7 @@ type TestModel = {
   xxxx?: any,
   datetime?: Date | string,
   name:{first:string, last:string}
+  testModel:TestModel
 }
 type DeepKeys<T> = T extends object
   ? {
@@ -136,7 +137,7 @@ export function App() {
 
 
 
-        <Input<TestModel> name="sub" class="a" />
+        <Input<TestModel> name="testModel" class="a" />
 
 
         {/* <Input name="b" /> */}
@@ -145,7 +146,7 @@ export function App() {
         <Input label="Doesn't have initial data" name="asdf" />
         {/* <TextInput label="AAAAAA" name="a" /> */}
         <TextInput<TestModel> label="B" name="a" />
-        <TextInput<TestModel> label="C" name="c" />
+        <TextInput<TestModel> label="C" name="testModel" />
 
 
         <Example name="sub.a" />
