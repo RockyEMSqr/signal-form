@@ -3,8 +3,10 @@ import preactLogo from './assets/preact.svg'
 import viteLogo from '/vite.svg'
 import './app.css'
 import { SignalForm } from '../../src/form';
-import { DateTimeInput, Input, TextInput } from '../../src';
-import { SelectInput } from '../../src/inputs/select'
+import { DateInput, DateTimeInput, Input, TextInput } from '../../src';
+import { SelectInput } from '../../src/inputs/select';
+import { TextareaInput } from '../../src/inputs/textarea'
+import { NumberInput } from '../../src/inputs/number'
 // import { useMappedSignal, useNestedSignal } from '../../src/hooks';
 import { Signal, useSignal } from '@preact/signals';
 import { useDeepSignal } from '../../src/deepSignal';
@@ -72,7 +74,18 @@ export function App() {
   }, [])
   return (
     <>
-
+      <div>
+        <SignalForm initData={({ text: ' as;dkflj asd;l kjasd;flk jasd;falksjdf ;asldkjfas;jeisef sefjawoeijfaweij faowiej fo' })} onSubmit={(e, data) => {
+          console.log(JSON.stringify(data, null, ' '));
+        }}>
+          <TextareaInput />
+          <TextareaInput name="text" />
+          <TextareaInput label="Write in me" name="textThatYouPutInMe" />
+          <DateInput label="just date" name="date" />
+          <NumberInput label="number" name="aNumber" />
+          <button>Submit</button>
+        </SignalForm>
+      </div>
       <div>
         <h1>Bug #1</h1>
         <SignalForm onSubmit={(e, data) => {

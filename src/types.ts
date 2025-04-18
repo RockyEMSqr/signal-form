@@ -248,6 +248,7 @@ type Subtract<A extends number, B extends number> =
   A extends 9 ? (B extends 0 ? 9 : B extends 1 ? 8 : B extends 2 ? 7 : B extends 3 ? 6 : B extends 4 ? 5 : B extends 5 ? 4 : B extends 6 ? 3 : B extends 7 ? 2 : B extends 8 ? 1 : 0) :
   A extends 10 ? (B extends 0 ? 10 : B extends 1 ? 9 : B extends 2 ? 8 : B extends 3 ? 7 : B extends 4 ? 6 : B extends 5 ? 5 : B extends 6 ? 4 : B extends 7 ? 3 : B extends 8 ? 2 : B extends 9 ? 1 : 0) :
   0;
+
 type DotNestedKeysInternal<T, Depth extends number = 3> = Depth extends 0
   ? ''
   : T extends Date | any[]
@@ -259,7 +260,9 @@ type DotNestedKeysInternal<T, Depth extends number = 3> = Depth extends 0
     [K in keyof T]: K extends symbol
     ? never
     : T[K] extends object
+    // @ts-expect-error Thinks K can be a symbol
     ? `${K}${DotPrefix<DotNestedKeysInternal<T[K], Subtract<Depth, 1>>>}`
+    // @ts-expect-error Thinks K can be a symbol
     : `${K}`
   }[keyof T]
   : string extends infer D
@@ -313,7 +316,7 @@ type SignalInputProps<ValueType, ContainingType> = {
   validate?: (value: any) => boolean,
   label?: string
 }
-export type InputProps<ValueType, ContainingType> = RenderableProps<Partial<Omit<HTMLInputElement, "value">> & SignalInputProps<ValueType, ContainingType>>;
+export type InputProps<ValueType, ContainingType = never> = RenderableProps<Partial<Omit<HTMLInputElement, "value">> & SignalInputProps<ValueType, ContainingType>>;
 // type Primitive = string | number;
 export type LabelValue = {
   label: string,

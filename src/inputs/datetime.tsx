@@ -89,3 +89,43 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
         </div>
     </>
 }
+export const DateInput = (p: InputProps<string>) => {
+    const { ctx, value, onChange } = useSignalFormInput(p);
+    const dateSignal = useSignal<string>();
+
+    const onDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+        dateSignal.value = e.currentTarget.value;
+
+        if (dateSignal.value) {
+            const dt = DateTime.fromISO(dateSignal.value);
+            onChange({ currentTarget: { value: dt.toISODate() } });
+        }
+    };
+
+    useEffect(() => {
+        if (p.value) {
+            const dt = DateTime.fromISO(p.value);
+            dateSignal.value = dt.toFormat('yyyy-MM-dd');
+        }
+    }, [p.value]);
+
+    return (
+        <div>
+            <label htmlFor={p.name} class="form-label">{p.label}</label>
+            <div class="input-field">
+                <div class="icon-wrapper">
+                    <i class="fa fa-image workspace-icon"></i>
+                    <p>Date</p>
+                </div>
+                <input
+                    type="date"
+                    class="form-control recital-tool-input-button1"
+                    value={dateSignal}
+                    onChange={onDateChange}
+                    id={p.name}
+                    placeholder="Date"
+                />
+            </div>
+        </div>
+    );
+};

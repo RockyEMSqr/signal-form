@@ -1,6 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "preact/jsx-runtime";
 import { useSignal } from "@preact/signals";
-import { useGetInputSignal } from "../hooks";
+import { useGetInputSignal, useSignalFormInput } from "../hooks";
 import { useEffect } from "preact/compat";
 import { DateTime } from 'luxon';
 import { getDT } from "../utils";
@@ -54,4 +54,22 @@ export const DateTimeInput = (p) => {
                                             timeSignal.value = e.currentTarget.value;
                                             console.log('time keyup', e);
                                         }, onChange: onTimeChange })] }) })] })] }) });
+};
+export const DateInput = (p) => {
+    const { ctx, value, onChange } = useSignalFormInput(p);
+    const dateSignal = useSignal();
+    const onDateChange = (e) => {
+        dateSignal.value = e.currentTarget.value;
+        if (dateSignal.value) {
+            const dt = DateTime.fromISO(dateSignal.value);
+            onChange({ currentTarget: { value: dt.toISODate() } });
+        }
+    };
+    useEffect(() => {
+        if (p.value) {
+            const dt = DateTime.fromISO(p.value);
+            dateSignal.value = dt.toFormat('yyyy-MM-dd');
+        }
+    }, [p.value]);
+    return (_jsxs("div", { children: [_jsx("label", { htmlFor: p.name, class: "form-label", children: p.label }), _jsxs("div", { class: "input-field", children: [_jsxs("div", { class: "icon-wrapper", children: [_jsx("i", { class: "fa fa-image workspace-icon" }), _jsx("p", { children: "Date" })] }), _jsx("input", { type: "date", class: "form-control recital-tool-input-button1", value: dateSignal, onChange: onDateChange, id: p.name, placeholder: "Date" })] })] }));
 };
