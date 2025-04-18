@@ -3,10 +3,7 @@ import preactLogo from './assets/preact.svg'
 import viteLogo from '/vite.svg'
 import './app.css'
 import { SignalForm } from '../../src/form';
-import { DateInput, DateTimeInput, Input, TextInput } from '../../src';
-import { SelectInput } from '../../src/inputs/select';
-import { TextareaInput } from '../../src/inputs/textarea'
-import { NumberInput } from '../../src/inputs/number'
+import { Input, TextInput, DateInput, DateTimeInput, SelectInput, TextareaInput, NumberInput } from '../../src/index';
 // import { useMappedSignal, useNestedSignal } from '../../src/hooks';
 import { Signal, useSignal } from '@preact/signals';
 import { useDeepSignal } from '../../src/deepSignal';
