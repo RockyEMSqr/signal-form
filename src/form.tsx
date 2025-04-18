@@ -3,7 +3,7 @@ import { useCallback, useDebugValue, useEffect, useMemo } from 'preact/hooks';
 import { Signal, useSignal } from '@preact/signals'
 import { SignalFormContextData, SignalFormCtx } from './context';
 import { SignalFormProps } from './types';
-import { useDeepSignal } from './deepSignal';
+import { deepSignal, useDeepSignal } from './deepSignal';
 // import { deepSignal, useDeepSignal } from 'deepsignal';
 
 //https://github.com/preactjs/signals/blob/main/docs/demos/react/nesting/index.tsx#L17
@@ -24,7 +24,12 @@ import { useDeepSignal } from './deepSignal';
 // I dont know if A Form parent container is a good idea but probably is
 
 export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps<T>>) => {
-    const formSignal = p.signal || useDeepSignal(p.initData as T || {} as T); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
+    let formSignal = p.signal || useDeepSignal(p.initData as T || {} as T); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
+
+    useEffect(()=>{
+        // console.log('init data changed', p.initData);
+       formSignal = deepSignal(p.initData as T || {} as T);
+    }, [p.initData])
     // useEffect(() => {
     //     console.log(formSignal);
     //     if (!p.initData) {

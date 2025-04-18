@@ -50,6 +50,7 @@ export function App() {
     select3: [1, 2, 3],
     datetime: new Date(),
   };
+  const arr = [{x:5}, {x:10}]
   // let formData = useNestedSignal(initformData);
   // let deepSignal = useDeepSignal(initformData);
   let formData = useDeepSignal(initformData);
@@ -61,6 +62,8 @@ export function App() {
     // deepSignal.a++;
     // console.log(deepSignal.sub)
     formData.people[0].name = 'rocky' + ' ' + Date.now()
+    arr[0].x++;
+    console.log(arr)
   }, [])
 
   const noFormData = useDeepSignal<any>({});
@@ -69,8 +72,16 @@ export function App() {
       tick();
     }, 1000);
   }, [])
+
+  
   return (
     <>
+    <div>
+      <h1>Possible Bug #3</h1>
+      <SignalForm initData={arr}>
+      {arr.map((x, i)=><TextInput name={`${i}.x`} value="XXXXX" />)}
+      </SignalForm>
+    </div>
       <div>
         <SignalForm initData={({ text: ' as;dkflj asd;l kjasd;flk jasd;falksjdf ;asldkjfas;jeisef sefjawoeijfaweij faowiej fo' })} onSubmit={(e, data) => {
           console.log(JSON.stringify(data, null, ' '));
