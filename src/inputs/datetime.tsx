@@ -111,21 +111,16 @@ export const DateInput = (p: InputProps<string>) => {
 
     return (
         <div>
-            <label htmlFor={p.name} class="form-label">{p.label}</label>
-            <div class="input-field">
-                <div class="icon-wrapper">
-                    <i class="fa fa-image workspace-icon"></i>
-                    <p>Date</p>
-                </div>
-                <input
-                    type="date"
-                    class="form-control recital-tool-input-button1"
-                    value={dateSignal}
-                    onChange={onDateChange}
-                    id={p.name}
-                    placeholder="Date"
-                />
-            </div>
+            {p.label && <label for={p.id}>{p.label}</label>}
+            <input
+                type="date"
+                class="form-control recital-tool-input-button1"
+                value={dateSignal}
+                onChange={onDateChange}
+                id={p.name}
+                placeholder="Date"
+            />
+
         </div>
     );
 };

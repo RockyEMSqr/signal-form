@@ -71,5 +71,5 @@ export const DateInput = (p) => {
             dateSignal.value = dt.toFormat('yyyy-MM-dd');
         }
     }, [p.value]);
-    return (_jsxs("div", { children: [_jsx("label", { htmlFor: p.name, class: "form-label", children: p.label }), _jsxs("div", { class: "input-field", children: [_jsxs("div", { class: "icon-wrapper", children: [_jsx("i", { class: "fa fa-image workspace-icon" }), _jsx("p", { children: "Date" })] }), _jsx("input", { type: "date", class: "form-control recital-tool-input-button1", value: dateSignal, onChange: onDateChange, id: p.name, placeholder: "Date" })] })] }));
+    return (_jsxs("div", { children: [p.label && _jsx("label", { for: p.id, children: p.label }), _jsx("input", { type: "date", class: "form-control recital-tool-input-button1", value: dateSignal, onChange: onDateChange, id: p.name, placeholder: "Date" })] }));
 };
