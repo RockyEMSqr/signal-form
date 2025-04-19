@@ -5,7 +5,8 @@ import { Signal } from "@preact/signals";
 import { DeepSignal } from "./deepSignal";
 
 export type SignalFormProps<T> = {
-  onSubmit?: (e: SubmitEvent, data: DeepSignal<T>, fieldMap?: any) => void,
+  /**Send a plain old object */
+  onSubmit?: (e: SubmitEvent, data: T, dataAsSignal: DeepSignal<T>, fieldMap?: any) => void,
   initData?: Partial<T> | undefined,
   signal?: DeepSignal<T>
 };

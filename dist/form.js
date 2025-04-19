@@ -1,5 +1,6 @@
 import { jsx as _jsx } from "preact/jsx-runtime";
 import { useCallback } from 'preact/hooks';
+import { Signal } from '@preact/signals';
 import { SignalFormCtx } from './context';
 import { useDeepSignal } from './deepSignal';
 // import { deepSignal, useDeepSignal } from 'deepsignal';
@@ -20,7 +21,10 @@ import { useDeepSignal } from './deepSignal';
 // }
 // I dont know if A Form parent container is a good idea but probably is
 export const SignalForm = (p) => {
-    const formSignal = p.signal || useDeepSignal(p.initData || {}); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
+    let formSignal = p.signal || useDeepSignal(p.initData || {}); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
+    if (p.signal instanceof Signal) {
+        formSignal = useDeepSignal(p.signal.value);
+    }
     // useEffect(() => {
     //     console.log(formSignal);
     //     if (!p.initData) {
@@ -72,7 +76,7 @@ export const SignalForm = (p) => {
             //     }
             // }
         }
-        p.onSubmit && p.onSubmit(e, formSignal, ctx.fieldMap);
+        p.onSubmit && p.onSubmit(e, JSON.parse(JSON.stringify(formSignal)), formSignal, ctx.fieldMap);
     }, []);
     const ctx = {
         data: formSignal,

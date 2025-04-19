@@ -1,7 +1,7 @@
 import { useSignalFormInput } from "../hooks";
 import { InputProps } from "../types";
 
-export const NumberInput = (p: InputProps<number>) => {
+export function NumberInput<ContainingType = never>(p: InputProps<number, ContainingType>) {
     const { ctx, value, onChange } = useSignalFormInput(p);
     return <>
         <div>

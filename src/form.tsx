@@ -25,11 +25,9 @@ import { deepSignal, useDeepSignal } from './deepSignal';
 
 export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps<T>>) => {
     let formSignal = p.signal || useDeepSignal(p.initData as T || {} as T); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
-
-    useEffect(()=>{
-        // console.log('init data changed', p.initData);
-       formSignal = deepSignal(p.initData as T || {} as T);
-    }, [p.initData])
+    if (p.signal instanceof Signal) {
+        formSignal = useDeepSignal(p.signal.value);
+    }
     // useEffect(() => {
     //     console.log(formSignal);
     //     if (!p.initData) {
@@ -82,7 +80,7 @@ export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps
             //     }
             // }
         }
-        p.onSubmit && p.onSubmit(e, formSignal, ctx.fieldMap);
+        p.onSubmit && p.onSubmit(e, JSON.parse(JSON.stringify(formSignal)), formSignal, ctx.fieldMap);
     }, []);
     const ctx: SignalFormContextData<{}> = {
         data: formSignal,

@@ -55,7 +55,7 @@ export const DateTimeInput = (p) => {
                                             console.log('time keyup', e);
                                         }, onChange: onTimeChange })] }) })] })] }) });
 };
-export const DateInput = (p) => {
+export function DateInput(p) {
     const { ctx, value, onChange } = useSignalFormInput(p);
     const dateSignal = useSignal();
     const onDateChange = (e) => {
@@ -67,9 +67,19 @@ export const DateInput = (p) => {
     };
     useEffect(() => {
         if (p.value) {
-            const dt = DateTime.fromISO(p.value);
-            dateSignal.value = dt.toFormat('yyyy-MM-dd');
+            if (typeof p.value == "string") {
+                // assume string in iso format
+                const dt = DateTime.fromISO(p.value);
+                dateSignal.value = dt.toFormat('yyyy-MM-dd');
+            }
         }
     }, [p.value]);
-    return (_jsxs("div", { children: [p.label && _jsx("label", { for: p.id, children: p.label }), _jsx("input", { type: "date", class: "form-control recital-tool-input-button1", value: dateSignal, onChange: onDateChange, id: p.name, placeholder: "Date" })] }));
-};
+    useEffect(() => {
+        if (value.value instanceof Date) {
+            const dt = DateTime.fromJSDate(value.value);
+            dateSignal.value = dt.toFormat('yyyy-MM-dd');
+        }
+    }, [value]);
+    return (_jsxs(_Fragment, { children: [p.label && _jsx("label", { for: p.id, children: p.label }), _jsx("input", { type: "date", class: p.class, value: dateSignal, onChange: onDateChange, id: p.id, placeholder: "Date" })] }));
+}
+;

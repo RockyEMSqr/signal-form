@@ -89,8 +89,9 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
         </div>
     </>
 }
-export const DateInput = (p: InputProps<string>) => {
-    const { ctx, value, onChange } = useSignalFormInput(p);
+type DateOrString = Date | string;
+export function DateInput<ContainingType = never>(p: InputProps<Date | string>) {
+    const { ctx, value, onChange } = useSignalFormInput<DateOrString, ContainingType>(p);
     const dateSignal = useSignal<string>();
 
     const onDateChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -98,29 +99,37 @@ export const DateInput = (p: InputProps<string>) => {
 
         if (dateSignal.value) {
             const dt = DateTime.fromISO(dateSignal.value);
-            onChange({ currentTarget: { value: dt.toISODate() } });
+            onChange({ currentTarget: { value: dt.toISODate()! } });
         }
     };
 
     useEffect(() => {
         if (p.value) {
-            const dt = DateTime.fromISO(p.value);
-            dateSignal.value = dt.toFormat('yyyy-MM-dd');
+            if (typeof p.value == "string") {
+                // assume string in iso format
+                const dt = DateTime.fromISO(p.value);
+                dateSignal.value = dt.toFormat('yyyy-MM-dd');
+            }
         }
     }, [p.value]);
+    useEffect(() => {
+        if (value.value as any instanceof Date) {
+            const dt = DateTime.fromJSDate(value.value as Date);
+            dateSignal.value = dt.toFormat('yyyy-MM-dd');
+        }
+    }, [value])
 
-    return (
-        <div>
-            {p.label && <label for={p.id}>{p.label}</label>}
-            <input
-                type="date"
-                class="form-control recital-tool-input-button1"
-                value={dateSignal}
-                onChange={onDateChange}
-                id={p.name}
-                placeholder="Date"
-            />
+    return (<>
+        {p.label && <label for={p.id}>{p.label}</label>}
+        <input
+            type="date"
+            class={p.class}
+            value={dateSignal}
+            onChange={onDateChange}
+            id={p.id}
+            placeholder="Date"
+        />
 
-        </div>
+    </>
     );
 };
