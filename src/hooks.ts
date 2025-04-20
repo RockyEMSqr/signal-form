@@ -1,12 +1,22 @@
 import { useCallback, useContext, useEffect, useMemo } from "preact/hooks";
 import { SignalFormCtx, SignalFormFieldState } from "./context";
 import { KeyboardEvent } from "preact/compat";
-import { GenericEvent, InputProps } from "./types";
+import { FormState, GenericEvent, InputProps } from "./types";
 import { dset, getSignal } from "./utils";
 import dlv from 'dlv';
 // import { toNestedSignal } from "./form";
 import { Signal, useSignal } from "@preact/signals";
 import { useDeepSignal } from "./deepSignal";
+export function useSignalForm() {
+    const formState = useDeepSignal<FormState>({
+        submittedCount: 0,
+        submitted: false,
+        submitting: false,
+    })
+    return {
+        formState
+    }
+}
 export function useSignalFormInput<T, CO>(p: InputProps<T, CO>) {
     return useMemo(() => {
         const ctx = useContext(SignalFormCtx);

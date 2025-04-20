@@ -2,7 +2,7 @@ import { ComponentChild, ComponentChildren, RenderableProps } from 'preact';
 import { useCallback, useDebugValue, useEffect, useMemo } from 'preact/hooks';
 import { Signal, useSignal } from '@preact/signals'
 import { SignalFormContextData, SignalFormCtx } from './context';
-import { SignalFormProps } from './types';
+import { FormState, SignalFormProps } from './types';
 import { deepSignal, useDeepSignal } from './deepSignal';
 // import { deepSignal, useDeepSignal } from 'deepsignal';
 
@@ -25,6 +25,7 @@ import { deepSignal, useDeepSignal } from './deepSignal';
 
 export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps<T>>) => {
     let formSignal = p.signal || useDeepSignal(p.initData as T || {} as T); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
+    let formState = p.formState || useDeepSignal<FormState>({ submittedCount: 0 } as any)
     if (p.signal instanceof Signal) {
         formSignal = useDeepSignal(p.signal.value);
     }
@@ -60,8 +61,11 @@ export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps
     //     }
 
     // }, [p.children])
-    const onSubmit = useCallback((e: SubmitEvent) => {
+    const onSubmit = useCallback(async (e: SubmitEvent) => {
         e.preventDefault();
+
+        formState.submitting = true;
+
         //validate on submit. prop?
         for (let k in ctx.fieldMap) {
             let m = ctx.fieldMap[k];
@@ -80,14 +84,19 @@ export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps
             //     }
             // }
         }
-        p.onSubmit && p.onSubmit(e, JSON.parse(JSON.stringify(formSignal)), formSignal, ctx.fieldMap);
+        p.onSubmit && await p.onSubmit(e, JSON.parse(JSON.stringify(formSignal)), formSignal, formState, ctx.fieldMap);
+        formState.submitting = false;
+        formState.submitted = true;
+        formState.submittedCount = formState.submittedCount + 1;
+
     }, []);
     const ctx: SignalFormContextData<{}> = {
         data: formSignal,
         fieldMap: {},
         ctxState: useDeepSignal({
             count: 0
-        })
+        }),
+        formState: formState
     }
     return (<SignalFormCtx.Provider value={ctx}>
         <form onSubmit={onSubmit}>

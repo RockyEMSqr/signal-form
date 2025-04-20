@@ -6,9 +6,10 @@ import { DeepSignal } from "./deepSignal";
 
 export type SignalFormProps<T> = {
   /**Send a plain old object */
-  onSubmit?: (e: SubmitEvent, data: T, dataAsSignal: DeepSignal<T>, fieldMap?: any) => void,
+  onSubmit?: (e: SubmitEvent, data: T, dataAsSignal?: DeepSignal<T>, formState?: FormState, fieldMap?: any) => void,
   initData?: Partial<T> | undefined,
-  signal?: DeepSignal<T>
+  signal?: DeepSignal<T>,
+  formState?: DeepSignal<FormState>
 };
 
 // type DeepKeys<T> = T extends object
@@ -341,3 +342,11 @@ export type GenericEvent<TargetType extends Element> = Event & { currentTarget: 
 // export type Leaves<T, D extends number = 10> = [D] extends [never] ? never : T extends object ?
 //     { [K in keyof T]-?: Join<K, Leaves<T[K], Prev[D]>> }[keyof T] : "";
 // end https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object
+
+
+
+export type FormState = {
+  submitting: boolean,
+  submitted: boolean,
+  submittedCount: number
+}
