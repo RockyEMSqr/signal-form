@@ -22,6 +22,7 @@ import { useDeepSignal } from './deepSignal';
 // I dont know if A Form parent container is a good idea but probably is
 export const SignalForm = (p) => {
     let formSignal = p.signal || useDeepSignal(p.initData || {}); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
+    let formState = p.formState || useDeepSignal({ submittedCount: 0 });
     if (p.signal instanceof Signal) {
         formSignal = useDeepSignal(p.signal.value);
     }
@@ -55,8 +56,9 @@ export const SignalForm = (p) => {
     //         return processChild(children)
     //     }
     // }, [p.children])
-    const onSubmit = useCallback((e) => {
+    const onSubmit = useCallback(async (e) => {
         e.preventDefault();
+        formState.submitting = true;
         //validate on submit. prop?
         for (let k in ctx.fieldMap) {
             let m = ctx.fieldMap[k];
@@ -76,14 +78,18 @@ export const SignalForm = (p) => {
             //     }
             // }
         }
-        p.onSubmit && p.onSubmit(e, JSON.parse(JSON.stringify(formSignal)), formSignal, ctx.fieldMap);
+        p.onSubmit && await p.onSubmit(e, JSON.parse(JSON.stringify(formSignal)), formSignal, formState, ctx.fieldMap);
+        formState.submitting = false;
+        formState.submitted = true;
+        formState.submittedCount = formState.submittedCount + 1;
     }, []);
     const ctx = {
         data: formSignal,
         fieldMap: {},
         ctxState: useDeepSignal({
             count: 0
-        })
+        }),
+        formState: formState
     };
-    return (_jsx(SignalFormCtx.Provider, { value: ctx, children: _jsx("form", { onSubmit: onSubmit, children: p.children }) }));
+    return (_jsx(SignalFormCtx.Provider, { value: ctx, children: _jsx("form", { class: p.class, onSubmit: onSubmit, children: p.children }) }));
 };

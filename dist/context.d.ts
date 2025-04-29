@@ -1,5 +1,6 @@
 import { Signal } from '@preact/signals';
 import { DeepSignal } from 'deepsignal';
+import { FormState } from './types';
 export type SignalFormFieldState<T> = {
     props?: any;
     valid?: boolean;
@@ -15,5 +16,6 @@ export type SignalFormContextData<T> = {
     ctxState: DeepSignal<{
         count: number;
     }>;
+    formState: DeepSignal<FormState>;
 };
 export declare const SignalFormCtx: import("preact").Context<SignalFormContextData<any>>;

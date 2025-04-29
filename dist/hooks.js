@@ -5,6 +5,16 @@ import dlv from 'dlv';
 // import { toNestedSignal } from "./form";
 import { Signal, useSignal } from "@preact/signals";
 import { useDeepSignal } from "./deepSignal";
+export function useSignalForm() {
+    const formState = useDeepSignal({
+        submittedCount: 0,
+        submitted: false,
+        submitting: false,
+    });
+    return {
+        formState
+    };
+}
 export function useSignalFormInput(p) {
     return useMemo(() => {
         const ctx = useContext(SignalFormCtx);

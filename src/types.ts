@@ -9,7 +9,9 @@ export type SignalFormProps<T> = {
   onSubmit?: (e: SubmitEvent, data: T, dataAsSignal?: DeepSignal<T>, formState?: FormState, fieldMap?: any) => void,
   initData?: Partial<T> | undefined,
   signal?: DeepSignal<T>,
-  formState?: DeepSignal<FormState>
+  formState?: DeepSignal<FormState>,
+
+  class?: string
 };
 
 // type DeepKeys<T> = T extends object
