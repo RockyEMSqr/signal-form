@@ -31,5 +31,5 @@ export function SelectInput(p) {
                 // value={value}
                 onChange: oc, id: p.id, 
                 // onKeyUp={onKeyUp}
-                multiple: p.multiple, children: [p.placeholder && _jsx("option", { selected: Array.isArray(value === null || value === void 0 ? void 0 : value.value) ? value.value.length === 0 : (value === null || value === void 0 ? void 0 : value.value) == undefined, children: p.placeholder }), p.items.map(x => _jsx("option", { selected: isSelected(x), value: x.value, children: x.label }))] })] });
+                multiple: p.multiple, children: [p.placeholder && _jsx("option", { value: "", selected: Array.isArray(value === null || value === void 0 ? void 0 : value.value) ? value.value.length === 0 : (value === null || value === void 0 ? void 0 : value.value) == undefined, children: p.placeholder }), p.items.map(x => _jsx("option", { selected: isSelected(x), value: x.value, children: x.label }))] })] });
 }

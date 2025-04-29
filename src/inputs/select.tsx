@@ -37,7 +37,7 @@ export function SelectInput<ContainingType>(p: SelectInputProps<string | string[
             // onKeyUp={onKeyUp}
             multiple={p.multiple}
         >
-            {p.placeholder && <option selected={Array.isArray(value?.value) ? value.value.length === 0 : value?.value == undefined}>{p.placeholder}</option>}
+            {p.placeholder && <option value="" selected={Array.isArray(value?.value) ? value.value.length === 0 : value?.value == undefined}>{p.placeholder}</option>}
             {/* selected={value?.value?.includes(x.value)} */}
             {p.items.map(x => <option selected={isSelected(x)} value={x.value}>{x.label}</option>)}
         </select>
