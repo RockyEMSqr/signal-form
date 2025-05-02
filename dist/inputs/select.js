@@ -26,8 +26,7 @@ export function SelectInput(p) {
     const isSelected = useCallback((x) => {
         return x.value ? Array.isArray(value === null || value === void 0 ? void 0 : value.value) ? value.value.includes(x.value) : (value === null || value === void 0 ? void 0 : value.value) == x.value : false;
     }, [value]);
-    return _jsxs(_Fragment, { children: [p.label && _jsx("label", { for: p.id, children: p.label }), _jsxs("select", { 
-                // class={classes.join(' ')}
+    return _jsxs(_Fragment, { children: [p.label && _jsx("label", { for: p.id, children: p.label }), _jsxs("select", { class: classes.join(' '), 
                 // value={value}
                 onChange: oc, id: p.id, 
                 // onKeyUp={onKeyUp}

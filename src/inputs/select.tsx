@@ -30,7 +30,7 @@ export function SelectInput<ContainingType>(p: SelectInputProps<string | string[
     return <>
         {p.label && <label for={p.id}>{p.label}</label>}
         <select
-            // class={classes.join(' ')}
+            class={classes.join(' ')}
             // value={value}
             onChange={oc}
             id={p.id}
