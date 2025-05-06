@@ -1,5 +1,5 @@
 import { useSignal } from "@preact/signals";
-import { DateInput, NumberInput, SignalForm, TextInput } from "../../../src";
+import { DateInput, DateTimeInput, NumberInput, SignalForm, TextInput } from "../../../src";
 type AType = {
     x: number,
     dt: Date,
@@ -15,6 +15,7 @@ export function Example2() {
         <SignalForm onSubmit={(e, submittedData) => {
             console.log(e, submittedData);
         }} signal={data}>
+            <DateTimeInput class="a-class" />
             <div><TextInput<AType> label="Name" name="name" /></div>
             <div><DateInput<AType> label="Date" name="dt" /></div>
             <div><NumberInput<AType> label="X" name="x" /></div>

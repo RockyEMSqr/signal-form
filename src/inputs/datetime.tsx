@@ -55,8 +55,8 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
         }
     }, [value])
     return <>
-        <div>
-            <label for={p.name} class="form-label">{p.label}</label>
+        <div class={p.class}>
+            {p.label && <label for={p.name} class="form-label">{p.label}</label>}
             <div class='row width-90'>
                 <div class='col side-gap'>
                     <div class='input-field'>
@@ -65,7 +65,8 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
                             {/* <p>{p.label}</p>  */}
                             <p>Date</p>
                         </div>
-                        <input type="date" class="sf-dt df-d" value={dateSignal} onChange={onDateChange} id={p.name} />
+                        <input type="date" class="sf-dt df-d" value={dateSignal}
+                            onChange={onDateChange} id={p.name} />
                     </div>
                 </div>
 
@@ -81,7 +82,6 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
                         <input type="time" class="sf-dt sf-t"
                             value={timeSignal} onKeyUp={e => {
                                 timeSignal.value = e.currentTarget.value;
-                                console.log('time keyup', e)
                             }} onChange={onTimeChange} />
                     </div>
                 </div>
