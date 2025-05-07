@@ -90,7 +90,7 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
     </>
 }
 type DateOrString = Date | string;
-export function DateInput<ContainingType = never>(p: InputProps<Date | string>) {
+export function DateInput<ContainingType = never>(p: InputProps<Date | string, ContainingType>) {
     const { ctx, value, onChange } = useSignalFormInput<DateOrString, ContainingType>(p);
     const dateSignal = useSignal<string>();
 

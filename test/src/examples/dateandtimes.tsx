@@ -15,6 +15,7 @@ export function Example2() {
         <SignalForm onSubmit={(e, submittedData) => {
             console.log(e, submittedData);
         }} signal={data}>
+            <DateInput<AType> name="dt" />
             <DateTimeInput class="a-class" />
             <div><TextInput<AType> label="Name" name="name" /></div>
             <div><DateInput<AType> label="Date" name="dt" /></div>

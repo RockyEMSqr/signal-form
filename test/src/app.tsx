@@ -1,6 +1,6 @@
 import { LocationProvider, ErrorBoundary, Router, Route } from 'preact-iso'
 import { Example1 } from './examples/1'
-import { Example2 } from './examples/2'
+import { Example2 } from './examples/dateandtimes'
 import { FormStateTinker } from './examples/formState'
 export function App() {
   return <LocationProvider>
