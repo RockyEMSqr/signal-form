@@ -100,10 +100,12 @@ export function DateInput<ContainingType = never>(p: InputProps<Date | string, C
         if (dateSignal.value) {
             const dt = DateTime.fromISO(dateSignal.value);
             onChange({ currentTarget: { value: dt.toISODate()! } });
+        } else {
+            // handle clear button
+            onChange({ currentTarget: { value: '' } });
         }
     };
     useEffect(() => {
-        debugger;
         if (p.value) {
             if (typeof p.value == "string") {
                 // assume string in iso format
@@ -113,7 +115,6 @@ export function DateInput<ContainingType = never>(p: InputProps<Date | string, C
         }
     }, [p.value]);
     useEffect(() => {
-        debugger;
         if (value.value as any instanceof Date) {
             const dt = DateTime.fromJSDate(value.value as Date);
             dateSignal.value = dt.toFormat('yyyy-MM-dd');
@@ -121,7 +122,6 @@ export function DateInput<ContainingType = never>(p: InputProps<Date | string, C
             // assume string in iso format
             const dt = DateTime.fromISO(value.value);
             dateSignal.value = dt.toFormat('yyyy-MM-dd');
-            console.log('REMOVE THIS', dateSignal.value)
         }
     }, [value])
 
