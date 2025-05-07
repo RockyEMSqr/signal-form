@@ -102,7 +102,15 @@ export function DateInput<ContainingType = never>(p: InputProps<Date | string, C
             onChange({ currentTarget: { value: dt.toISODate()! } });
         }
     };
-
+    useEffect(() => {
+        if (value.value) {
+            if (typeof value.value == "string") {
+                // assume string in iso format
+                const dt = DateTime.fromISO(value.value);
+                dateSignal.value = dt.toFormat('yyyy-MM-dd');
+            }
+        }
+    }, []);
     useEffect(() => {
         if (p.value) {
             if (typeof p.value == "string") {
