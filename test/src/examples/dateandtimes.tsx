@@ -2,12 +2,12 @@ import { useSignal } from "@preact/signals";
 import { DateInput, DateTimeInput, NumberInput, SignalForm, TextInput } from "../../../src";
 type AType = {
     x: number,
-    dt: Date,
+    dt: Date | string,
     name: string
 }
 export function Example2() {
     const data = useSignal<AType>({
-        dt: new Date(),
+        dt: new Date().toISOString(),
         name: 'Test Name',
         x: 10
     })
@@ -15,10 +15,10 @@ export function Example2() {
         <SignalForm onSubmit={(e, submittedData) => {
             console.log(e, submittedData);
         }} signal={data}>
-            <DateInput<AType> name="dt" />
-            <DateTimeInput class="a-class" />
+            <DateInput<AType> label="this one" name="dt" />
+            {/* <DateTimeInput class="a-class" /> */}
             <div><TextInput<AType> label="Name" name="name" /></div>
-            <div><DateInput<AType> label="Date" name="dt" /></div>
+            {/* <div><DateInput<AType> label="Date" name="dt" /></div> */}
             <div><NumberInput<AType> label="X" name="x" /></div>
             <button>Submit</button>
         </SignalForm>

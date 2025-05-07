@@ -65,15 +65,7 @@ export function DateInput(p) {
         }
     };
     useEffect(() => {
-        if (value.value) {
-            if (typeof value.value == "string") {
-                // assume string in iso format
-                const dt = DateTime.fromISO(value.value);
-                dateSignal.value = dt.toFormat('yyyy-MM-dd');
-            }
-        }
-    }, []);
-    useEffect(() => {
+        debugger;
         if (p.value) {
             if (typeof p.value == "string") {
                 // assume string in iso format
@@ -83,9 +75,16 @@ export function DateInput(p) {
         }
     }, [p.value]);
     useEffect(() => {
+        debugger;
         if (value.value instanceof Date) {
             const dt = DateTime.fromJSDate(value.value);
             dateSignal.value = dt.toFormat('yyyy-MM-dd');
+        }
+        else if (typeof value.value == "string") {
+            // assume string in iso format
+            const dt = DateTime.fromISO(value.value);
+            dateSignal.value = dt.toFormat('yyyy-MM-dd');
+            console.log('REMOVE THIS', dateSignal.value);
         }
     }, [value]);
     return (_jsxs(_Fragment, { children: [p.label && _jsx("label", { for: p.id, children: p.label }), _jsx("input", { type: "date", class: p.class, value: dateSignal, onChange: onDateChange, id: p.id, placeholder: "Date" })] }));
