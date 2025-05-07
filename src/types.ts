@@ -300,7 +300,8 @@ type DotNestedKeysInternal<T, Depth extends number = 3> = Depth extends 0
 //   : never;
 
 type DotNestedKeys<T> = DotNestedKeysInternal<T, 5>;
-type Path<T = never> = [T] extends [never] ? string : keyof T | DotNestedKeys<T>
+export type Path<T = never> = [T] extends [never] ? string : keyof T | DotNestedKeys<T>
+export type PathOf<T = never> = Path<T>;
 
 type TT = {
   x: number,
