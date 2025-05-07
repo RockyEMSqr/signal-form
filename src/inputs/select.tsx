@@ -4,7 +4,7 @@ import { GenericEvent, SelectInputProps } from "../types";
 
 export function SelectInput<ContainingType>(p: SelectInputProps<string | string[], ContainingType>) {
     // export const SelectInput = (p: SelectInputProps<string>) => {
-    const { ctx, value, onChange, onKeyUp, inputState } = useSignalFormInput<string | string[], ContainingType>(p)
+    const { ctx, value, onChange, onKeyUp, inputState } = useSignalFormInput<string | string[] | { id: string }, ContainingType>(p)
     // should i just {...p} the props?
     let oc: (e: GenericEvent<any>) => void = onChange;
     if (p.multiple) {
@@ -25,6 +25,9 @@ export function SelectInput<ContainingType>(p: SelectInputProps<string | string[
     p.class && classes.push(p.class);
     inputState?.class && classes.push(inputState.class);
     const isSelected = useCallback((x: { value: string | number }) => {
+        if (typeof value.value == 'object' && !Array.isArray(value.value) && value.value.id) {
+            return value.value.id == x.value;
+        }
         return x.value ? Array.isArray(value?.value) ? value.value.includes(x.value) : value?.value == x.value : false;
     }, [value])
     return <>
