@@ -25,10 +25,10 @@ export function SelectInput<ContainingType>(p: SelectInputProps<string | string[
     p.class && classes.push(p.class);
     inputState?.class && classes.push(inputState.class);
     const isSelected = useCallback((x: { value: string | number }) => {
-        if (typeof value.value == 'object' && !Array.isArray(value.value) && value.value.id) {
+        if (typeof value.value == 'object' && !Array.isArray(value.value) && value.value?.id) {
             return value.value.id == x.value;
         }
-        return x.value ? Array.isArray(value?.value) ? value.value.includes(x.value) : value?.value == x.value : false;
+        return x.value ? Array.isArray(value?.value) ? value.value.includes(x?.value) : value?.value == x.value : false;
     }, [value])
     return <>
         {p.label && <label for={p.id}>{p.label}</label>}

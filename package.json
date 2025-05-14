@@ -1,6 +1,6 @@
 {
   "name": "signal-form",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "scripts": {
     "test": "pushd ./test ; vite",
     "build": "tsc"
