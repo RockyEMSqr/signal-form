@@ -27,7 +27,7 @@ export function useSignalFormInput<T, CO>(p: InputProps<T, CO>) {
         }
         // let mapv = useInputState(p.name)
         useEffect(() => {
-            console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', !p.name ? 'No Name' : dlv(ctx.data, p.name), typeof p.value, ctx.data.value)
+            console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', !p.name ? 'No Name' : dlv(ctx.data, p.name), typeof p.value, ctx.data?.value)
 
         }, [[p.value]]);
 
