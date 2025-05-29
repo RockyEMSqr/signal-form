@@ -18,7 +18,6 @@ export function useSignalForm() {
     }
 }
 export function useSignalFormInput<T, CO>(p: InputProps<T, CO>) {
-    debugger;
     return useMemo(() => {
         const ctx = useContext(SignalFormCtx);
         let mapv = {} as SignalFormFieldState<T>;
@@ -103,7 +102,6 @@ export function useGetInputSignal<T, CO>(p: InputProps<T, CO>) {
     const ctx = useContext(SignalFormCtx);
     let inputSignal = p.signal;
     let valVal = p.value;
-    debugger;
     if (p.name) {
         if (p.signal) {
             inputSignal = getSignal(inputSignal, p.name);

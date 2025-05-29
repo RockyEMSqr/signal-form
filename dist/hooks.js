@@ -16,7 +16,6 @@ export function useSignalForm() {
     };
 }
 export function useSignalFormInput(p) {
-    debugger;
     return useMemo(() => {
         const ctx = useContext(SignalFormCtx);
         let mapv = {};
@@ -96,7 +95,6 @@ export function useGetInputSignal(p) {
     const ctx = useContext(SignalFormCtx);
     let inputSignal = p.signal;
     let valVal = p.value;
-    debugger;
     if (p.name) {
         if (p.signal) {
             inputSignal = getSignal(inputSignal, p.name);
