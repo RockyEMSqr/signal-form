@@ -16,6 +16,7 @@ export function useSignalForm() {
     };
 }
 export function useSignalFormInput(p) {
+    debugger;
     return useMemo(() => {
         const ctx = useContext(SignalFormCtx);
         let mapv = {};
@@ -95,6 +96,7 @@ export function useGetInputSignal(p) {
     const ctx = useContext(SignalFormCtx);
     let inputSignal = p.signal;
     let valVal = p.value;
+    debugger;
     if (p.name) {
         if (p.signal) {
             inputSignal = getSignal(inputSignal, p.name);
@@ -109,7 +111,7 @@ export function useGetInputSignal(p) {
             // if target doesn't have key, make it create it by setting something
             //* if not in target put something in there.
             if ((inputSignal === null || inputSignal === void 0 ? void 0 : inputSignal.value) === undefined) {
-                dset(ctx.data, p.name, undefined);
+                dset(ctx.data, p.name, p.value);
             }
         }
     }

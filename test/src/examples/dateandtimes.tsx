@@ -1,5 +1,5 @@
 import { useSignal } from "@preact/signals";
-import { DateInput, DateTimeInput, NumberInput, SignalForm, TextInput } from "../../../src";
+import { DateInput, DateTimeInput, Input, NumberInput, SignalForm, TextInput } from "../../../src";
 type AType = {
     x: number,
     dt: Date | string,
@@ -12,14 +12,16 @@ export function Example2() {
         x: 10
     })
     return <>
-        <SignalForm onSubmit={(e, submittedData) => {
+        <SignalForm<any> onSubmit={(e, submittedData) => {
+            console.assert(submittedData.shouldbeThere == "FOOBOO");
             console.log(e, submittedData);
         }} signal={data}>
-            <DateInput<AType> label="this one" name="dt" />
+            <Input type="hidden" name="shouldbeThere" value="FOOBOO" />
+            {/* <DateInput<AType> label="this one" name="dt" /> */}
             {/* <DateTimeInput class="a-class" /> */}
-            <div><TextInput<AType> label="Name" name="name" /></div>
+            {/* <div><TextInput<AType> label="Name" name="name" /></div> */}
             {/* <div><DateInput<AType> label="Date" name="dt" /></div> */}
-            <div><NumberInput<AType> label="X" name="x" /></div>
+            {/* <div><NumberInput<AType> label="X" name="x" /></div> */}
             <button>Submit</button>
         </SignalForm>
     </>
