@@ -55,38 +55,18 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
         }
     }, [value])
     return <>
-        <div>
-            {p.label && <label for={p.name} class="form-label">{p.label}</label>}
-            <div class='row width-90'>
-                <div class='col side-gap'>
-                    <div class='input-field'>
-                        <div class="icon-wrapper">
-                            <i class="fa fa-image workspace-icon"></i>
-                            {/* <p>{p.label}</p>  */}
-                            <p>Date</p>
-                        </div>
-                        <input type="date" class={p.class} value={dateSignal}
-                            onChange={onDateChange} id={p.name} />
-                    </div>
-                </div>
-
-                <div class='col'>
-                    {/* <label>{p.label}</label> */}
-                    <div class='input-field'>
-                        <div class="icon-wrapper">
-                            <i class="fa fa-image workspace-icon"></i>
-                            {/* <p>{p.label}</p> */}
-                            <p>Time</p>
-                        </div>
-
-                        <input type="time" class={p.class}
-                            value={timeSignal} onKeyUp={e => {
-                                timeSignal.value = e.currentTarget.value;
-                            }} onChange={onTimeChange} />
-                    </div>
-                </div>
+            <div>
+                {p.label && <label for={p.name} class="form-label">{p.label}</label>}
+            
+                <input type="date" class={p.class} value={dateSignal}
+                    onChange={onDateChange} id={p.name} />
             </div>
-        </div>
+            <div class='col'>
+                <input type="time" class={p.class}
+                    value={timeSignal} onKeyUp={e => {
+                    timeSignal.value = e.currentTarget.value;
+                    }} onChange={onTimeChange} />
+            </div>
     </>
 }
 type DateOrString = Date | string;
