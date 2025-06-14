@@ -4,15 +4,9 @@ import { InputProps } from "../types";
 export function NumberInput<ContainingType = never>(p: InputProps<number, ContainingType>) {
     const { ctx, value, onChange } = useSignalFormInput(p);
     return <>
-        <div>
+
             {/* <label for="todo" class="form-label">{p.label}</label> */}
-            <div class='input-field'>
-                <div class="icon-wrapper ">
-                    <i class="fa fa-image workspace-icon"></i>
-                    <p>{p.label}</p>
-                </div>
-                <input type="number" class="form-control recital-tool-input-button" value={value} onChange={onChange} id="todo" placeholder={p.label} />
-            </div>
-        </div>
+                <input type="number" class={p.class} value={value} onChange={onChange} id="todo" placeholder={p.label} />
+                
     </>
 }
