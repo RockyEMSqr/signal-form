@@ -24,7 +24,11 @@ export function SelectInput(p) {
     p.class && classes.push(p.class);
     (inputState === null || inputState === void 0 ? void 0 : inputState.class) && classes.push(inputState.class);
     const isSelected = useCallback((x) => {
-        return x.value ? Array.isArray(value === null || value === void 0 ? void 0 : value.value) ? value.value.includes(x.value) : (value === null || value === void 0 ? void 0 : value.value) == x.value : false;
+        var _a;
+        if (typeof value.value == 'object' && !Array.isArray(value.value) && ((_a = value.value) === null || _a === void 0 ? void 0 : _a.id)) {
+            return value.value.id == x.value;
+        }
+        return x.value ? Array.isArray(value === null || value === void 0 ? void 0 : value.value) ? value.value.includes(x === null || x === void 0 ? void 0 : x.value) : (value === null || value === void 0 ? void 0 : value.value) == x.value : false;
     }, [value]);
     return _jsxs(_Fragment, { children: [p.label && _jsx("label", { for: p.id, children: p.label }), _jsxs("select", { class: classes.join(' '), 
                 // value={value}

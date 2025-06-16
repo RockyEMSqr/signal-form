@@ -16,7 +16,8 @@ type DotNestedKeysInternal<T, Depth extends number = 3> = Depth extends 0 ? '' :
     [K in keyof T]: K extends symbol ? never : T[K] extends object ? `${K}${DotPrefix<DotNestedKeysInternal<T[K], Subtract<Depth, 1>>>}` : `${K}`;
 }[keyof T] : string extends infer D ? Extract<D, string> : never;
 type DotNestedKeys<T> = DotNestedKeysInternal<T, 5>;
-type Path<T = never> = [T] extends [never] ? string : keyof T | DotNestedKeys<T>;
+export type Path<T = never> = [T] extends [never] ? string : keyof T | DotNestedKeys<T>;
+export type PathOf<T = never> = Path<T>;
 type SignalInputProps<ValueType, ContainingType> = {
     name?: Path<ContainingType>;
     value?: ValueType;

@@ -73,7 +73,7 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
     </>
 }
 type DateOrString = Date | string;
-export function DateInput<ContainingType = never>(p: InputProps<Date | string>) {
+export function DateInput<ContainingType = never>(p: InputProps<Date | string, ContainingType>) {
     const { ctx, value, onChange } = useSignalFormInput<DateOrString, ContainingType>(p);
     const dateSignal = useSignal<string>();
 
@@ -83,9 +83,11 @@ export function DateInput<ContainingType = never>(p: InputProps<Date | string>) 
         if (dateSignal.value) {
             const dt = DateTime.fromISO(dateSignal.value);
             onChange({ currentTarget: { value: dt.toISODate()! } });
+        } else {
+            // handle clear button
+            onChange({ currentTarget: { value: '' } });
         }
     };
-
     useEffect(() => {
         if (p.value) {
             if (typeof p.value == "string") {
@@ -98,6 +100,10 @@ export function DateInput<ContainingType = never>(p: InputProps<Date | string>) 
     useEffect(() => {
         if (value.value as any instanceof Date) {
             const dt = DateTime.fromJSDate(value.value as Date);
+            dateSignal.value = dt.toFormat('yyyy-MM-dd');
+        } else if (typeof value.value == "string") {
+            // assume string in iso format
+            const dt = DateTime.fromISO(value.value);
             dateSignal.value = dt.toFormat('yyyy-MM-dd');
         }
     }, [value])
