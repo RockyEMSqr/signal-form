@@ -50,9 +50,9 @@ export const DateTimeInput = (p) => {
             timeSignal.value = dt === null || dt === void 0 ? void 0 : dt.toFormat('HH:mm');
         }
     }, [value]);
-    return _jsx(_Fragment, { children: _jsxs("div", { children: [p.label && _jsx("label", { for: p.name, class: "form-label", children: p.label }), _jsxs("div", { class: 'row width-90', children: [_jsx("div", { class: 'col side-gap', children: _jsxs("div", { class: 'input-field', children: [_jsxs("div", { class: "icon-wrapper", children: [_jsx("i", { class: "fa fa-image workspace-icon" }), _jsx("p", { children: "Date" })] }), _jsx("input", { type: "date", class: p.class, value: dateSignal, onChange: onDateChange, id: p.name })] }) }), _jsx("div", { class: 'col', children: _jsxs("div", { class: 'input-field', children: [_jsxs("div", { class: "icon-wrapper", children: [_jsx("i", { class: "fa fa-image workspace-icon" }), _jsx("p", { children: "Time" })] }), _jsx("input", { type: "time", class: p.class, value: timeSignal, onKeyUp: e => {
-                                            timeSignal.value = e.currentTarget.value;
-                                        }, onChange: onTimeChange })] }) })] })] }) });
+    return _jsxs(_Fragment, { children: [_jsxs("div", { children: [p.label && _jsx("label", { for: p.name, class: "form-label", children: p.label }), _jsx("input", { type: "date", class: p.class, value: dateSignal, onChange: onDateChange, id: p.name })] }), _jsx("div", { class: 'col', children: _jsx("input", { type: "time", class: p.class, value: timeSignal, onKeyUp: e => {
+                        timeSignal.value = e.currentTarget.value;
+                    }, onChange: onTimeChange }) })] });
 };
 export function DateInput(p) {
     const { ctx, value, onChange } = useSignalFormInput(p);
