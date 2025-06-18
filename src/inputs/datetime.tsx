@@ -55,17 +55,20 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
         }
     }, [value])
     return <>
-            <div>
-                {p.label && <label for={p.name} class="form-label">{p.label}</label>}
-            
-                <input type="date" class={p.class} value={dateSignal}
-                    onChange={onDateChange} id={p.name} />
-            </div>
-            <div class='col'>
-                <input type="time" class={p.class}
-                    value={timeSignal} onKeyUp={e => {
-                    timeSignal.value = e.currentTarget.value;
-                    }} onChange={onTimeChange} />
+            <div class = 'row'>
+                <div class = 'col'>
+                    {p.label && <label for={p.name} class="form-label">{p.label}</label>}
+                
+                    <input type="date" class={p.class} value={dateSignal}
+                        onChange={onDateChange} id={p.name} />
+                </div>
+                <div class='col'>
+                    <label>Time</label>
+                    <input type="time" class={p.class}
+                        value={timeSignal} onKeyUp={e => {
+                        timeSignal.value = e.currentTarget.value;
+                        }} onChange={onTimeChange} />
+                </div>
             </div>
     </>
 }
