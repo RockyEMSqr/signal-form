@@ -7,5 +7,5 @@ export function TextareaInput(p) {
     let classes = [];
     p.class && classes.push(p.class);
     (inputState === null || inputState === void 0 ? void 0 : inputState.class) && classes.push(inputState.class);
-    return _jsxs(_Fragment, { children: [p.label && _jsx("label", { for: p.id, children: p.label }), _jsx("textarea", { name: p.name, type: p.type, class: classes.join(' '), value: value, onChange: onChange, id: p.id, placeholder: p.placeholder, onKeyUp: onKeyUp, children: value })] });
+    return _jsxs(_Fragment, { children: [p.label && _jsx("label", { for: p.id, children: p.label }), _jsx("textarea", { name: p.name, type: p.type, class: classes.join(' '), value: value, onChange: onChange, id: p.id, placeholder: p.placeholder, onKeyUp: onKeyUp, required: p.required, children: value })] });
 }

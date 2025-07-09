@@ -19,6 +19,7 @@ export function Input<ContainingType = never>(p: InputProps<string, ContainingTy
             id={p.id}
             placeholder={p.placeholder}
             onKeyUp={onKeyUp}
+            required={p.required}
         /></>
 }
 

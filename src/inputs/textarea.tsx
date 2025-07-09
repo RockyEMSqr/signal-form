@@ -19,6 +19,7 @@ export function TextareaInput<ContainingType = never>(p: InputProps<string, Cont
             id={p.id}
             placeholder={p.placeholder}
             onKeyUp={onKeyUp}
+            required={p.required}
         >{value}</textarea>
     </>
 }

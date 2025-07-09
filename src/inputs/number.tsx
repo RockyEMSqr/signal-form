@@ -5,8 +5,13 @@ export function NumberInput<ContainingType = never>(p: InputProps<number, Contai
     const { ctx, value, onChange } = useSignalFormInput(p);
     return <>
 
-            {/* <label for="todo" class="form-label">{p.label}</label> */}
-                <input type="number" class={p.class} value={value} onChange={onChange} id="todo" placeholder={p.label} />
-                
+        {/* <label for="todo" class="form-label">{p.label}</label> */}
+        <input type="number" class={p.class}
+            value={value} onChange={onChange}
+            id={p.id}
+            placeholder={p.label}
+            required={p.required}
+        />
+
     </>
 }
