@@ -59,8 +59,12 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
             <div class='col'>
                 {p.label && <label for={p.name} class="form-label">{p.label}</label>}
 
-                <input type="date" class={p.class} value={dateSignal}
-                    onChange={onDateChange} id={p.name} />
+                <input type="date" class={p.class}
+                    value={dateSignal}
+                    onChange={onDateChange}
+                    id={p.name}
+                    required={p.required}
+                />
             </div>
             <div class='col'>
                 <label>Time</label>
