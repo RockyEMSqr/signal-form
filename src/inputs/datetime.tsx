@@ -86,13 +86,12 @@ export function DateInput<ContainingType = never>(p: InputProps<Date | string, C
 
     const onDateChange = (e: ChangeEvent<HTMLInputElement>) => {
         dateSignal.value = e.currentTarget.value;
-
         if (dateSignal.value) {
             let dt = DateTime.fromISO(dateSignal.value).setZone('local', { keepLocalTime: true });
             if (p.timezone) {
                 dt = dt.setZone(p.timezone, { keepLocalTime: true })
             }
-            onChange({ currentTarget: { value: dt.toISODate()! } });
+            onChange({ currentTarget: { value: dt.toISO()! } });
         } else {
             // handle clear button
             onChange({ currentTarget: { value: '' } });

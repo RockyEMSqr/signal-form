@@ -17,6 +17,7 @@ export function Example2() {
             console.log(e, submittedData);
         }} signal={data}>
             <Input type="hidden" name="shouldbeThere" value="FOOBOO" />
+            <DateInput name="dateWithTime" />
             {/* <DateInput<AType> label="this one" name="dt" /> */}
             {/* <DateTimeInput class="a-class" /> */}
             {/* <div><TextInput<AType> label="Name" name="name" /></div> */}
