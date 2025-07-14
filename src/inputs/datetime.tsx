@@ -80,7 +80,7 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
     </>
 }
 type DateOrString = Date | string;
-export function DateInput<ContainingType = never>(p: InputProps<Date | string, ContainingType>) {
+export function DateInput<ContainingType = never>(p: InputProps<Date | string, ContainingType> & { timezone?: string }) {
     const { ctx, value, onChange } = useSignalFormInput<DateOrString, ContainingType>(p);
     const dateSignal = useSignal<string>();
 
@@ -88,7 +88,10 @@ export function DateInput<ContainingType = never>(p: InputProps<Date | string, C
         dateSignal.value = e.currentTarget.value;
 
         if (dateSignal.value) {
-            const dt = DateTime.fromISO(dateSignal.value);
+            let dt = DateTime.fromISO(dateSignal.value);
+            if (p.timezone) {
+                dt = dt.setZone(p.timezone, { keepLocalTime: true })
+            }
             onChange({ currentTarget: { value: dt.toISODate()! } });
         } else {
             // handle clear button
