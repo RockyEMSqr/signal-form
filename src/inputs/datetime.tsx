@@ -88,7 +88,7 @@ export function DateInput<ContainingType = never>(p: InputProps<Date | string, C
         dateSignal.value = e.currentTarget.value;
 
         if (dateSignal.value) {
-            let dt = DateTime.fromISO(dateSignal.value);
+            let dt = DateTime.fromISO(dateSignal.value).setZone('local', { keepLocalTime: true });
             if (p.timezone) {
                 dt = dt.setZone(p.timezone, { keepLocalTime: true })
             }

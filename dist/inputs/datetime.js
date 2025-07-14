@@ -60,7 +60,10 @@ export function DateInput(p) {
     const onDateChange = (e) => {
         dateSignal.value = e.currentTarget.value;
         if (dateSignal.value) {
-            const dt = DateTime.fromISO(dateSignal.value);
+            let dt = DateTime.fromISO(dateSignal.value).setZone('local', { keepLocalTime: true });
+            if (p.timezone) {
+                dt = dt.setZone(p.timezone, { keepLocalTime: true });
+            }
             onChange({ currentTarget: { value: dt.toISODate() } });
         }
         else {
