@@ -4,7 +4,7 @@ import { InputProps } from "../types";
 import { ChangeEvent, useEffect } from "preact/compat";
 import { DateTime } from 'luxon'
 import { getDT } from "../utils";
-export const DateTimeInput = (p: InputProps<string | Date>) => {
+export const DateTimeInput = (p: InputProps<string | Date> & { timezone?: string }) => {
     // const { ctx, value, onChange } = useSignalFormInput(p);
     let value = useGetInputSignal(p);
     value?.subscribe((v) => {
@@ -23,8 +23,7 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
     let combineAndCallOnChange = () => {
         console.log('Combine the date and time into a Date and call onChange')
         if (dateSignal.value && timeSignal.value) {
-            let dt = DateTime.fromJSDate(new Date(dateSignal.value));
-
+            let dt = DateTime.fromJSDate(new Date(dateSignal.value)).setZone(p.timezone || 'local', { keepLocalTime: true });
             let timeSplit = timeSignal.value.split(':').map(x => Number(x));
             dt = dt.set({ hour: timeSplit[0], minute: timeSplit[1] });
 
@@ -40,7 +39,7 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
     }
     useEffect(() => {
         if (p.value) {
-            let dt = DateTime.fromISO(p.value);
+            let dt = DateTime.fromISO(p.value).setZone(p.timezone || 'local', { keepLocalTime: true });
             dateSignal.value = dt.toFormat('yyyy-MM-dd');
             timeSignal.value = dt.toFormat('HH:mm')
         }
@@ -48,7 +47,7 @@ export const DateTimeInput = (p: InputProps<string | Date>) => {
     useEffect(() => {
         console.log('value changed', value);
         if (value) {
-            let dt = getDT(value.value)
+            let dt = getDT(value.value)?.setZone(p.timezone || 'local', { keepLocalTime: true })
             // let dt = DateTime.fromISO(value.value);
             dateSignal.value = dt?.toFormat('yyyy-MM-dd');
             timeSignal.value = dt?.toFormat('HH:mm')
@@ -87,10 +86,7 @@ export function DateInput<ContainingType = never>(p: InputProps<Date | string, C
     const onDateChange = (e: ChangeEvent<HTMLInputElement>) => {
         dateSignal.value = e.currentTarget.value;
         if (dateSignal.value) {
-            let dt = DateTime.fromISO(dateSignal.value).setZone('local', { keepLocalTime: true });
-            if (p.timezone) {
-                dt = dt.setZone(p.timezone, { keepLocalTime: true })
-            }
+            let dt = DateTime.fromISO(dateSignal.value).setZone(p.timezone || 'local', { keepLocalTime: true });
             onChange({ currentTarget: { value: dt.toISO()! } });
         } else {
             // handle clear button
@@ -101,18 +97,18 @@ export function DateInput<ContainingType = never>(p: InputProps<Date | string, C
         if (p.value) {
             if (typeof p.value == "string") {
                 // assume string in iso format
-                const dt = DateTime.fromISO(p.value);
+                const dt = DateTime.fromISO(p.value).setZone(p.timezone || 'local', { keepLocalTime: true });
                 dateSignal.value = dt.toFormat('yyyy-MM-dd');
             }
         }
     }, [p.value]);
     useEffect(() => {
         if (value.value as any instanceof Date) {
-            const dt = DateTime.fromJSDate(value.value as Date);
+            const dt = DateTime.fromJSDate(value.value as Date).setZone(p.timezone || 'local', { keepLocalTime: true });
             dateSignal.value = dt.toFormat('yyyy-MM-dd');
         } else if (typeof value.value == "string") {
             // assume string in iso format
-            const dt = DateTime.fromISO(value.value);
+            const dt = DateTime.fromISO(value.value).setZone(p.timezone || 'local', { keepLocalTime: true });
             dateSignal.value = dt.toFormat('yyyy-MM-dd');
         }
     }, [value])
