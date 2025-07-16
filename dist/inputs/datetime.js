@@ -91,6 +91,6 @@ export function DateInput(p) {
             dateSignal.value = dt.toFormat('yyyy-MM-dd');
         }
     }, [value]);
-    return (_jsxs(_Fragment, { children: [p.label && _jsx("label", { for: p.id, children: p.label }), _jsx("input", { type: "date", class: p.class, value: dateSignal, onChange: onDateChange, id: p.id, placeholder: "Date", required: p.required, min: p.min })] }));
+    return (_jsxs(_Fragment, { children: [p.label && _jsx("label", { for: p.id, children: p.label }), _jsx("input", { type: "date", class: p.class, value: dateSignal, onChange: onDateChange, id: p.id, placeholder: "Date", required: p.required, min: p.min, max: p.max })] }));
 }
 ;

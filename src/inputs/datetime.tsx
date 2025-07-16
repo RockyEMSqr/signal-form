@@ -128,6 +128,7 @@ export function DateInput<ContainingType = never>(p: InputProps<Date | string, C
             placeholder="Date"
             required={p.required}
             min={p.min}
+            max={p.max}
         />
 
     </>
