@@ -18,6 +18,7 @@ export function Example2() {
         }} signal={data}>
             <Input type="hidden" name="shouldbeThere" value="FOOBOO" />
             <DateInput name="dateWithTime" />
+            <DateTimeInput name="dateWithTimeGiven" />
             {/* <DateInput<AType> label="this one" name="dt" /> */}
             {/* <DateTimeInput class="a-class" /> */}
             {/* <div><TextInput<AType> label="Name" name="name" /></div> */}
