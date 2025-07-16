@@ -24,7 +24,6 @@ export const DateTimeInput = (p: InputProps<string | Date> & { timezone?: string
         console.log('Combine the date and time into a Date and call onChange')
         if (dateSignal.value && timeSignal.value) {
             let dt = DateTime.fromISO(dateSignal.value).setZone(p.timezone || 'local', { keepLocalTime: true });
-            debugger
             let timeSplit = timeSignal.value.split(':').map(x => Number(x));
             dt = dt.set({ hour: timeSplit[0], minute: timeSplit[1] });
 
