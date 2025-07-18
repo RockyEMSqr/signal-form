@@ -4,7 +4,7 @@ import { InputProps } from "../types";
 import { ChangeEvent, useEffect } from "preact/compat";
 import { DateTime } from 'luxon'
 import { getDT } from "../utils";
-export const DateTimeInput = (p: InputProps<string | Date> & { timezone?: string }) => {
+export const DateTimeInput = (p: InputProps<string | Date> & { timezone?: string, dateLabel?: string, timeLabel?: string }) => {
     // const { ctx, value, onChange } = useSignalFormInput(p);
     let value = useGetInputSignal(p);
     value?.subscribe((v) => {
@@ -56,7 +56,7 @@ export const DateTimeInput = (p: InputProps<string | Date> & { timezone?: string
     return <>
         <div class='row'>
             <div class='col'>
-                {p.label && <label for={p.name} class="form-label">{p.label}</label>}
+                {p.dateLabel && <label>{p.dateLabel}</label>}
 
                 <input type="date" class={p.class}
                     value={dateSignal}
@@ -66,7 +66,7 @@ export const DateTimeInput = (p: InputProps<string | Date> & { timezone?: string
                 />
             </div>
             <div class='col'>
-                <label>Time</label>
+                {p.timeLabel && <label>{p.timeLabel}</label>}
                 <input type="time" class={p.class}
                     value={timeSignal} onKeyUp={e => {
                         timeSignal.value = e.currentTarget.value;
