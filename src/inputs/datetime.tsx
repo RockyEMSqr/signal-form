@@ -55,7 +55,7 @@ export const DateTimeInput = (p: InputProps<string | Date> & { timezone?: string
     }, [value])
     return <>
         <div class='row'>
-            <div class='col'>
+            <div class='col-6'>
                 {p.dateLabel && <label>{p.dateLabel}</label>}
 
                 <input type="date" class={p.class}
@@ -65,7 +65,7 @@ export const DateTimeInput = (p: InputProps<string | Date> & { timezone?: string
                     required={p.required}
                 />
             </div>
-            <div class='col'>
+            <div class='col-6'>
                 {p.timeLabel && <label>{p.timeLabel}</label>}
                 <input type="time" class={p.class}
                     value={timeSignal} onKeyUp={e => {
