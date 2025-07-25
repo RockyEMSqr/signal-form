@@ -51,7 +51,7 @@ export const DateTimeInput = (p) => {
             timeSignal.value = dt === null || dt === void 0 ? void 0 : dt.toFormat('HH:mm');
         }
     }, [value]);
-    return _jsx(_Fragment, { children: _jsxs("div", { class: 'row', children: [_jsxs("div", { class: 'col', children: [p.dateLabel && _jsx("label", { children: p.dateLabel }), _jsx("input", { type: "date", class: p.class, value: dateSignal, onChange: onDateChange, id: p.name, required: p.required })] }), _jsxs("div", { class: 'col', children: [p.timeLabel && _jsx("label", { children: p.timeLabel }), _jsx("input", { type: "time", class: p.class, value: timeSignal, onKeyUp: e => {
+    return _jsx(_Fragment, { children: _jsxs("div", { class: 'row', children: [_jsxs("div", { class: 'col-6', children: [p.dateLabel && _jsx("label", { children: p.dateLabel }), _jsx("input", { type: "date", class: p.class, value: dateSignal, onChange: onDateChange, id: p.name, required: p.required })] }), _jsxs("div", { class: 'col-6', children: [p.timeLabel && _jsx("label", { children: p.timeLabel }), _jsx("input", { type: "time", class: p.class, value: timeSignal, onKeyUp: e => {
                                 timeSignal.value = e.currentTarget.value;
                             }, onChange: onTimeChange, required: p.required })] })] }) });
 };
