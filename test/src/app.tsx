@@ -1,20 +1,31 @@
 import { LocationProvider, ErrorBoundary, Router, Route } from 'preact-iso'
-import { Example1 } from './examples/1'
-import { Example2 } from './examples/dateandtimes'
+import { RoutingExample } from './examples/1'
+import { DateTimesEx } from './examples/dateandtimes'
 import { FormStateTinker } from './examples/formState'
+import { LoadDataLater } from './examples/loadDataLater'
 export function App() {
   return <LocationProvider>
+    <ul>
+      <li><a href="/loadDataLater/">Load Data Later</a></li>
+      <li><a href="/">Dates</a></li>
+      <li><a href="/formstate/">Form State</a></li>
+      <li><a href="/ex1/">Routing</a></li>
+    </ul>
     <ErrorBoundary>
       <Router>
         {/* <Home path="/" /> */}
         {/* Alternative dedicated route component for better TS support */}
         {/* <Route path="/*" component={Example1} /> */}
-        <Route path="/" component={Example2} />
-        <Route path="/ex1/*" component={Example1} />
+        <Route path="/" component={DateTimesEx} />
+        <Route path="/ex1/:section*" component={RoutingExample} />
+        <Route path="/formstate" component={FormStateTinker} />
         <Route path="/ex3" component={FormStateTinker} />
+        <Route path="/loadDataLater" component={LoadDataLater} />
         {/* <Route path="/profile/:id" component={Profile} /> */}
         {/* `default` prop indicates a fallback route. Useful for 404 pages */}
         {/* <NotFound default /> */}
+
+        <Route default component={() => <>404</>} />
       </Router>
     </ErrorBoundary>
   </LocationProvider>

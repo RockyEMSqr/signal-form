@@ -7,6 +7,7 @@ import dlv from 'dlv';
 // import { toNestedSignal } from "./form";
 import { Signal, useSignal } from "@preact/signals";
 import { useDeepSignal } from "./deepSignal";
+const debug = process?.env?.DEBUG;
 export function useSignalForm() {
     const formState = useDeepSignal<FormState>({
         submittedCount: 0,
@@ -27,7 +28,9 @@ export function useSignalFormInput<T, CO>(p: InputProps<T, CO>) {
         }
         // let mapv = useInputState(p.name)
         useEffect(() => {
-            console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', !p.name ? 'No Name' : dlv(ctx.data, p.name), typeof p.value, ctx.data?.value)
+            if (debug) {
+                console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', !p.name ? 'No Name' : dlv(ctx.data, p.name), typeof p.value, ctx.data?.value)
+            }
 
         }, [[p.value]]);
 
@@ -56,7 +59,9 @@ export function useSignalFormInput<T, CO>(p: InputProps<T, CO>) {
 
         mapv.inputSignal = inputSignal!; // <-- 
         let onChange = useCallback((e: GenericEvent<HTMLInputElement>) => {
-            console.log('BOn Change, ', e, ctx.data);
+            if (debug) {
+                console.log('BOn Change, ', e, ctx.data);
+            }
             mapv.valid = p.validate ? p.validate(inputSignal?.value) : true;
             if (inputSignal) {
                 inputSignal.value = e.currentTarget.value as T //TODO: Cast to type T;
@@ -65,10 +70,14 @@ export function useSignalFormInput<T, CO>(p: InputProps<T, CO>) {
             if (p.onChange) {
                 p.onChange(e);
             }
-            console.log('AOn Change, ', ctx.data)
+            if (debug) {
+                console.log('AOn Change, ', ctx.data)
+            }
         }, []);
         const onKeyUp = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
-            console.log('onKeyUp', e);
+            if (debug) {
+                console.log('onKeyUp', e);
+            }
             if (inputSignal) {
                 inputSignal.value = e.currentTarget.value as T;
             }
@@ -94,7 +103,9 @@ export function useSignalFormInput<T, CO>(p: InputProps<T, CO>) {
             onKeyUp,
             inputState: mapv
         };
-        console.log('useSignalFormInput', retVal);
+        if (debug) {
+            console.log('useSignalFormInput', retVal);
+        }
         return retVal;
     }, []);
 }

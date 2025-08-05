@@ -5,7 +5,8 @@ type AType = {
     dt: Date | string,
     name: string
 }
-export function Example2() {
+export function DateTimesEx() {
+    const postedData = useSignal<any>(null)
     const data = useSignal<AType>({
         dt: new Date().toISOString(),
         name: 'Test Name',
@@ -15,6 +16,7 @@ export function Example2() {
         <SignalForm<any> onSubmit={(e, submittedData) => {
             console.assert(submittedData.shouldbeThere == "FOOBOO");
             console.log(e, submittedData);
+            postedData.value = submittedData;
         }} signal={data}>
             <Input type="hidden" name="shouldbeThere" value="FOOBOO" />
             <DateInput name="dateWithTime" />
@@ -26,5 +28,8 @@ export function Example2() {
             {/* <div><NumberInput<AType> label="X" name="x" /></div> */}
             <button>Submit</button>
         </SignalForm>
+        <pre>
+            {JSON.stringify(postedData, null, '  ')}
+        </pre>
     </>
 }

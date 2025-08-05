@@ -1,6 +1,6 @@
 import { LocationProvider, Router } from "preact-iso";
 
-export function Example1() {
+export function RoutingExample() {
     return <>
         <h1>Hi - This a routing with preact iso example</h1>
         <a href="/ex1/ex2">ex 2</a>
