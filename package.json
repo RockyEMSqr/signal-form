@@ -19,7 +19,8 @@
   "dependencies": {
     "@preact/signals": "^2.0.2",
     "deepsignal": "^1.6.0",
+    "dlv": "^1.1.3",
     "luxon": "^3.6.1",
-    "dlv": "^1.1.3"
+    "preact-richtextarea": "^1.2.1"
   }
 }

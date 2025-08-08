@@ -1,3 +1,4 @@
+var _a;
 import { useCallback, useContext, useEffect, useMemo } from "preact/hooks";
 import { SignalFormCtx } from "./context";
 import { dset, getSignal } from "./utils";
@@ -5,6 +6,7 @@ import dlv from 'dlv';
 // import { toNestedSignal } from "./form";
 import { Signal, useSignal } from "@preact/signals";
 import { useDeepSignal } from "./deepSignal";
+const debug = (_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.DEBUG;
 export function useSignalForm() {
     const formState = useDeepSignal({
         submittedCount: 0,
@@ -26,7 +28,9 @@ export function useSignalFormInput(p) {
         // let mapv = useInputState(p.name)
         useEffect(() => {
             var _a;
-            console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', !p.name ? 'No Name' : dlv(ctx.data, p.name), typeof p.value, (_a = ctx.data) === null || _a === void 0 ? void 0 : _a.value);
+            if (debug) {
+                console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', !p.name ? 'No Name' : dlv(ctx.data, p.name), typeof p.value, (_a = ctx.data) === null || _a === void 0 ? void 0 : _a.value);
+            }
         }, [[p.value]]);
         let inputSignal = useGetInputSignal(p);
         // let inputSignal = p.signal;
@@ -51,7 +55,9 @@ export function useSignalFormInput(p) {
         // }
         mapv.inputSignal = inputSignal; // <-- 
         let onChange = useCallback((e) => {
-            console.log('BOn Change, ', e, ctx.data);
+            if (debug) {
+                console.log('BOn Change, ', e, ctx.data);
+            }
             mapv.valid = p.validate ? p.validate(inputSignal === null || inputSignal === void 0 ? void 0 : inputSignal.value) : true;
             if (inputSignal) {
                 inputSignal.value = e.currentTarget.value; //TODO: Cast to type T;
@@ -59,10 +65,14 @@ export function useSignalFormInput(p) {
             if (p.onChange) {
                 p.onChange(e);
             }
-            console.log('AOn Change, ', ctx.data);
+            if (debug) {
+                console.log('AOn Change, ', ctx.data);
+            }
         }, []);
         const onKeyUp = useCallback((e) => {
-            console.log('onKeyUp', e);
+            if (debug) {
+                console.log('onKeyUp', e);
+            }
             if (inputSignal) {
                 inputSignal.value = e.currentTarget.value;
             }
@@ -87,7 +97,9 @@ export function useSignalFormInput(p) {
             onKeyUp,
             inputState: mapv
         };
-        console.log('useSignalFormInput', retVal);
+        if (debug) {
+            console.log('useSignalFormInput', retVal);
+        }
         return retVal;
     }, []);
 }

@@ -3,24 +3,27 @@ import { RoutingExample } from './examples/1'
 import { DateTimesEx } from './examples/dateandtimes'
 import { FormStateTinker } from './examples/formState'
 import { LoadDataLater } from './examples/loadDataLater'
+import { WysiwygEx } from './examples/wysiwyg'
 export function App() {
   return <LocationProvider>
     <ul>
       <li><a href="/loadDataLater/">Load Data Later</a></li>
-      <li><a href="/">Dates</a></li>
+      <li><a href="/dates">Dates</a></li>
       <li><a href="/formstate/">Form State</a></li>
       <li><a href="/ex1/">Routing</a></li>
+      <li><a href="/wysiwyg/">wysiwyg</a></li>
     </ul>
     <ErrorBoundary>
       <Router>
         {/* <Home path="/" /> */}
         {/* Alternative dedicated route component for better TS support */}
         {/* <Route path="/*" component={Example1} /> */}
-        <Route path="/" component={DateTimesEx} />
+        <Route path="/dates" component={DateTimesEx} />
         <Route path="/ex1/:section*" component={RoutingExample} />
         <Route path="/formstate" component={FormStateTinker} />
         <Route path="/ex3" component={FormStateTinker} />
         <Route path="/loadDataLater" component={LoadDataLater} />
+        <Route index path="/wysiwyg" component={WysiwygEx} />
         {/* <Route path="/profile/:id" component={Profile} /> */}
         {/* `default` prop indicates a fallback route. Useful for 404 pages */}
         {/* <NotFound default /> */}
