@@ -45,7 +45,7 @@ export function dsetSignal(obj: any, keys: string | any, val: any) {
 //     }
 //     return obj === undef ? def : obj;
 // }
-export function getSignal(obj: DeepSignal<any>, key: string | string[], def = null, p = 0, undef = undefined) {
+export function getSignal(obj: Signal<any> | DeepSignal<any>, key: string | string[], def = null, p = 0, undef = undefined) {
     let keys: string[] = [];
     if (typeof key == 'string') {
         keys = key.split('.')

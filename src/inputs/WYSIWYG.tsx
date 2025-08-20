@@ -1,12 +1,16 @@
 // first attempt with basic rich text area deal
 import RichTextArea from 'preact-richtextarea';
-import { useRef } from 'preact/hooks';
+import { useEffect, useRef } from 'preact/hooks';
 import { useSignalFormInput } from '../hooks';
 import { InputProps } from '../types';
 import type { JSX } from 'preact/jsx-runtime';
 export function RichTextAreaInput<ContainingType>(p: InputProps<string, ContainingType> & { toolbarAdditions?: JSX.Element[] }) {
     const { ctx, value, onChange, onKeyUp, inputState } = useSignalFormInput(p)
     const editorRef = useRef<RichTextArea>(null);
+    useEffect(() => {
+        editorRef.current.componentDidUpdate();
+    }, [p])
+
     function exec(c: string, v?: any) {
         editorRef.current.execCommand(c, false, v);
         editorRef.current.doFocus();
