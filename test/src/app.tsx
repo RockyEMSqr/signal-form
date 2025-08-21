@@ -4,6 +4,7 @@ import { DateTimesEx } from './examples/dateandtimes'
 import { FormStateTinker } from './examples/formState'
 import { LoadDataLater } from './examples/loadDataLater'
 import { WysiwygEx } from './examples/wysiwyg'
+import { AddressEx } from './examples/address'
 export function App() {
   return <LocationProvider>
     <ul>
@@ -12,6 +13,7 @@ export function App() {
       <li><a href="/formstate/">Form State</a></li>
       <li><a href="/ex1/">Routing</a></li>
       <li><a href="/wysiwyg/">wysiwyg</a></li>
+      <li><a href="/address">address</a></li>
     </ul>
     <ErrorBoundary>
       <Router>
@@ -24,6 +26,7 @@ export function App() {
         <Route path="/ex3" component={FormStateTinker} />
         <Route path="/loadDataLater" component={LoadDataLater} />
         <Route index path="/wysiwyg" component={WysiwygEx} />
+        <Route index path="/address" component={AddressEx} />
         {/* <Route path="/profile/:id" component={Profile} /> */}
         {/* `default` prop indicates a fallback route. Useful for 404 pages */}
         {/* <NotFound default /> */}
