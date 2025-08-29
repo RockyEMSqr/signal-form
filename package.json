@@ -2,7 +2,7 @@
   "name": "signal-form",
   "version": "0.0.10",
   "scripts": {
-    "test": "pushd ./test ; vite",
+    "test": "pushd ./example ; vite",
     "build": "tsc"
   },
   "main": "dist/index.js",
