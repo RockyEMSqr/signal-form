@@ -1,9 +1,11 @@
 import { ComponentChild, ComponentChildren, RenderableProps } from 'preact';
-import { useCallback, useDebugValue, useEffect, useMemo } from 'preact/hooks';
+import { useCallback, useDebugValue, useEffect, useMemo, useRef } from 'preact/hooks';
 import { Signal, useSignal } from '@preact/signals'
 import { SignalFormContextData, SignalFormCtx } from './context';
 import { FormState, SignalFormProps } from './types';
 import { deepSignal, useDeepSignal } from './deepSignal';
+import { Children } from 'preact/compat';
+import { getSignal } from './utils';
 // import { deepSignal, useDeepSignal } from 'deepsignal';
 
 //https://github.com/preactjs/signals/blob/main/docs/demos/react/nesting/index.tsx#L17
@@ -24,6 +26,8 @@ import { deepSignal, useDeepSignal } from './deepSignal';
 // I dont know if A Form parent container is a good idea but probably is
 
 export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps<T>>) => {
+    let formRef = useRef<HTMLFormElement>(null)
+
     let formSignal = p.signal || useDeepSignal(p.initData as T || {} as T); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
     let formState = p.formState || useDeepSignal<FormState>({ submittedCount: 0 } as any)
     if (p.signal instanceof Signal) {
@@ -61,6 +65,52 @@ export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps
     //     }
 
     // }, [p.children])
+    const processChild = (child: ComponentChild) => {
+        if (!child) {
+            return;
+        }
+        // if (typeof child == 'function') {
+        //     return child(formSignal);
+        // }
+        // return child;
+        if (child) {
+            if (typeof child == 'object') {
+                if ('type' in child) {
+                    if (child.type == 'input') {
+                        console.log(child, child.props.name, child.props.value);
+                        child.props.value = getSignal(formSignal, child.props.name)
+                    }
+                }
+            }
+        }
+    };
+    const processChildren = (children: ComponentChildren) => {
+        if (Array.isArray(children)) {
+            // let retVal = [];
+            for (let child of children) {
+                if (child) {
+                    processChild(child)
+                    if (typeof child == 'object') {
+                        if (child.props?.children) {
+                            processChildren(child.props.children)
+                        }
+                    }
+                }
+            }
+        } else {
+            processChild(children)
+        }
+    }
+    useEffect(() => {
+        if (p.children) {
+            if (Array.isArray(p.children)) {
+                processChildren(p.children)
+                // for (let child of p.children) {
+
+                // }
+            }
+        }
+    }, [p.children])
     const onSubmit = useCallback(async (e: SubmitEvent) => {
         e.preventDefault();
 
@@ -84,7 +134,24 @@ export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps
             //     }
             // }
         }
-        p.onSubmit && await p.onSubmit(e, JSON.parse(JSON.stringify(formSignal)), formSignal, formState, ctx.fieldMap);
+        let formDataAsObj: any;
+        if (formRef.current) {
+            let formData = new FormData(formRef.current);
+            let object: any = {};
+            formData.forEach((value, key) => {
+                // Reflect.has in favor of: object.hasOwnProperty(key)
+                if (!Reflect.has(object, key)) {
+                    object[key] = value;
+                    return;
+                }
+                if (!Array.isArray(object[key])) {
+                    object[key] = [object[key]];
+                }
+                object[key].push(value);
+            });
+            formDataAsObj = JSON.parse(JSON.stringify(object));
+        }
+        p.onSubmit && await p.onSubmit(e, JSON.parse(JSON.stringify(formSignal)), formSignal, formState, ctx.fieldMap, formDataAsObj);
         formState.submitting = false;
         formState.submitted = true;
         formState.submittedCount = formState.submittedCount + 1;
@@ -99,7 +166,7 @@ export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps
         formState: formState
     }
     return (<SignalFormCtx.Provider value={ctx}>
-        <form class={p.class} onSubmit={onSubmit}>
+        <form ref={formRef} class={p.class} onSubmit={onSubmit}>
             {/* {processChildren(p.children)}
              */}
             {p.children}
