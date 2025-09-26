@@ -4,7 +4,7 @@ import { useGetInputSignal, useSignalFormInput } from "../hooks";
 import { useEffect } from "preact/compat";
 import { DateTime } from 'luxon';
 import { getDT } from "../utils";
-export const DateTimeInput = (p) => {
+export function DateTimeInput(p) {
     // const { ctx, value, onChange } = useSignalFormInput(p);
     let value = useGetInputSignal(p);
     value === null || value === void 0 ? void 0 : value.subscribe((v) => {
@@ -36,32 +36,33 @@ export const DateTimeInput = (p) => {
     };
     useEffect(() => {
         if (p.value) {
-            let dt = DateTime.fromISO(p.value).setZone(p.timezone || 'local', { keepLocalTime: true });
+            let dt = DateTime.fromISO(p.value).setZone(p.timezone || 'local');
             dateSignal.value = dt.toFormat('yyyy-MM-dd');
             timeSignal.value = dt.toFormat('HH:mm');
         }
     }, [p.value]);
     useEffect(() => {
         var _a;
-        console.log('value changed', value);
+        // console.log('value changed', value);
         if (value) {
-            let dt = (_a = getDT(value.value)) === null || _a === void 0 ? void 0 : _a.setZone(p.timezone || 'local', { keepLocalTime: true });
+            let dt = (_a = getDT(value.value)) === null || _a === void 0 ? void 0 : _a.setZone(p.timezone || 'local');
             // let dt = DateTime.fromISO(value.value);
             dateSignal.value = dt === null || dt === void 0 ? void 0 : dt.toFormat('yyyy-MM-dd');
             timeSignal.value = dt === null || dt === void 0 ? void 0 : dt.toFormat('HH:mm');
+            // console.log(dt?.toString())
         }
     }, [value]);
-    return _jsx(_Fragment, { children: _jsxs("div", { class: 'row', children: [_jsxs("div", { class: 'col-6', children: [p.dateLabel && _jsx("label", { children: p.dateLabel }), _jsx("input", { type: "date", class: p.class, value: dateSignal, onChange: onDateChange, id: p.name, required: p.required })] }), _jsxs("div", { class: 'col-6', children: [p.timeLabel && _jsx("label", { children: p.timeLabel }), _jsx("input", { type: "time", class: p.class, value: timeSignal, onKeyUp: e => {
+    return _jsx(_Fragment, { children: _jsxs("div", { class: 'row', children: [p.label && _jsx("label", { children: p.label }), _jsxs("div", { class: 'col-6', children: [p.dateLabel && _jsx("label", { children: p.dateLabel }), _jsx("input", { type: "date", class: p.class, value: dateSignal, onChange: onDateChange, id: p.name, required: p.required })] }), _jsxs("div", { class: 'col-6', children: [p.timeLabel && _jsx("label", { children: p.timeLabel }), _jsx("input", { type: "time", class: p.class, value: timeSignal, onKeyUp: e => {
                                 timeSignal.value = e.currentTarget.value;
                             }, onChange: onTimeChange, required: p.required })] })] }) });
-};
+}
 export function DateInput(p) {
     const { ctx, value, onChange } = useSignalFormInput(p);
     const dateSignal = useSignal();
     const onDateChange = (e) => {
         dateSignal.value = e.currentTarget.value;
         if (dateSignal.value) {
-            let dt = DateTime.fromISO(dateSignal.value).setZone(p.timezone || 'local', { keepLocalTime: true });
+            let dt = DateTime.fromISO(dateSignal.value).setZone(p.timezone || 'local');
             onChange({ currentTarget: { value: dt.toISO() } });
         }
         else {
@@ -73,7 +74,7 @@ export function DateInput(p) {
         if (p.value) {
             if (typeof p.value == "string") {
                 // assume string in iso format
-                const dt = DateTime.fromISO(p.value).setZone(p.timezone || 'local', { keepLocalTime: true });
+                const dt = DateTime.fromISO(p.value).setZone(p.timezone || 'local');
                 dateSignal.value = dt.toFormat('yyyy-MM-dd');
             }
         }
