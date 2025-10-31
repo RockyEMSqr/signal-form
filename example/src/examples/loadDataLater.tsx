@@ -1,6 +1,6 @@
 import { useSignal } from "@preact/signals";
 import { SignalForm, TextInput, useSignalForm } from "../../../src";
-import { useDeepSignal } from "../../../src/deepSignal";
+import { useDeepSignal } from "deepsignal";
 import { useEffect } from "preact/hooks";
 export function LoadDataLater() {
     const { formState } = useSignalForm();

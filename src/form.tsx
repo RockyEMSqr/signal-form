@@ -1,9 +1,9 @@
 import { ComponentChild, ComponentChildren, RenderableProps } from 'preact';
 import { useCallback, useDebugValue, useEffect, useMemo } from 'preact/hooks';
-import { Signal, useSignal } from '@preact/signals'
+import { Signal, useSignal, effect } from '@preact/signals'
 import { SignalFormContextData, SignalFormCtx } from './context';
 import { FormState, SignalFormProps } from './types';
-import { deepSignal, useDeepSignal } from './deepSignal';
+import { deepSignal, useDeepSignal } from 'deepSignal';
 // import { deepSignal, useDeepSignal } from 'deepsignal';
 
 //https://github.com/preactjs/signals/blob/main/docs/demos/react/nesting/index.tsx#L17
@@ -24,10 +24,20 @@ import { deepSignal, useDeepSignal } from './deepSignal';
 // I dont know if A Form parent container is a good idea but probably is
 
 export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps<T>>) => {
-    let formSignal = p.signal || useDeepSignal(p.initData as T || {} as T); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
+    if(!p){
+        return <></>
+    }
+    let formSignal = useDeepSignal(p.initData as T || {} as T); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
     let formState = p.formState || useDeepSignal<FormState>({ submittedCount: 0 } as any)
-    if (p.signal instanceof Signal) {
-        formSignal = useDeepSignal(p.signal.value);
+    if (p.signal) {
+        if (p.signal instanceof Signal) {
+            formSignal = useDeepSignal(p.signal.value);
+            effect(() => {
+                if(p.signal){
+                    p.signal.value = JSON.parse(JSON.stringify(formSignal));
+                }
+            });
+        }
     }
     // useEffect(() => {
     //     console.log(formSignal);
