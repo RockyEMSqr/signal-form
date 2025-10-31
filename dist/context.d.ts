@@ -1,6 +1,6 @@
-import { Signal } from '@preact/signals';
-import { DeepSignal } from 'deepsignal';
-import { FormState } from './types';
+import type { Signal } from '@preact/signals';
+import type { DeepSignal } from 'deepsignal';
+import type { FormState } from './types';
 export type SignalFormFieldState<T> = {
     props?: any;
     valid?: boolean;

@@ -1,9 +1,8 @@
-import { jsx as _jsx } from "preact/jsx-runtime";
-import { useCallback } from 'preact/hooks';
+import { Fragment as _Fragment, jsx as _jsx } from "preact/jsx-runtime";
+import { useCallback, useEffect } from 'preact/hooks';
 import { Signal } from '@preact/signals';
 import { SignalFormCtx } from './context';
-import { useDeepSignal } from './deepSignal';
-// import { deepSignal, useDeepSignal } from 'deepsignal';
+import { useDeepSignal } from 'deepsignal';
 //https://github.com/preactjs/signals/blob/main/docs/demos/react/nesting/index.tsx#L17
 // We may land a more comprehensive "Deep" Reactive in core,
 // since "Shallow" Reactive is trivial to implement atop Signal:
@@ -21,10 +20,20 @@ import { useDeepSignal } from './deepSignal';
 // }
 // I dont know if A Form parent container is a good idea but probably is
 export const SignalForm = (p) => {
+    if (!p) {
+        return _jsx(_Fragment, {});
+    }
     let formSignal = p.signal || useDeepSignal(p.initData || {}); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
     let formState = p.formState || useDeepSignal({ submittedCount: 0 });
-    if (p.signal instanceof Signal) {
-        formSignal = useDeepSignal(p.signal.value);
+    if (p.signal) {
+        if (p.signal instanceof Signal) {
+            formSignal = useDeepSignal(p.signal.value);
+            useEffect(() => {
+                p.signal.subscribe((v) => {
+                    Object.keys(v).forEach((k) => formSignal[k] = v[k]);
+                });
+            }, []);
+        }
     }
     // useEffect(() => {
     //     console.log(formSignal);

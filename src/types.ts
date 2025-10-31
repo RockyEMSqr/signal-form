@@ -2,7 +2,7 @@ import { RenderableProps } from "preact";
 import { ChangeEvent, HTMLInputTypeAttribute } from "preact/compat"
 // import { NestedSignal } from "./form";
 import { Signal } from "@preact/signals";
-import { DeepSignal } from "deepSignal";
+import { DeepSignal } from "deepsignal";
 
 export type SignalFormProps<T> = {
   /**Send a plain old object */

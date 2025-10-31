@@ -6,7 +6,7 @@ import { dset, getSignal } from "./utils";
 import dlv from 'dlv';
 // import { toNestedSignal } from "./form";
 import { Signal, useSignal } from "@preact/signals";
-import { useDeepSignal } from "deepSignal";
+import { useDeepSignal } from "deepsignal";
 const debug = process?.env?.DEBUG;
 export function useSignalForm() {
     const formState = useDeepSignal<FormState>({
