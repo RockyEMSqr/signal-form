@@ -7,9 +7,19 @@ import { getDT } from "../utils";
 export function DateTimeInput(p) {
     // const { ctx, value, onChange } = useSignalFormInput(p);
     let value = useGetInputSignal(p);
-    value === null || value === void 0 ? void 0 : value.subscribe((v) => {
-        console.log('Signal Subscribe', p.name, v);
-    });
+    useEffect(() => {
+        value === null || value === void 0 ? void 0 : value.subscribe((v) => {
+            var _a;
+            console.log('Signal Subscribe', p.name, v);
+            if (v) {
+                let dt = (_a = getDT(v)) === null || _a === void 0 ? void 0 : _a.setZone(p.timezone || 'local');
+                // let dt = DateTime.fromISO(value.value);
+                dateSignal.value = dt === null || dt === void 0 ? void 0 : dt.toFormat('yyyy-MM-dd');
+                timeSignal.value = dt === null || dt === void 0 ? void 0 : dt.toFormat('HH:mm');
+                // console.log(dt?.toString())
+            }
+        });
+    }, []);
     const dateSignal = useSignal();
     const timeSignal = useSignal();
     const onDateChange = (e) => {
