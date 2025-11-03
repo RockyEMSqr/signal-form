@@ -29,6 +29,7 @@ export const SignalForm = (p) => {
         if (p.signal instanceof Signal) {
             formSignal = useDeepSignal(p.signal.value);
             useEffect(() => {
+                debugger;
                 p.signal.subscribe((v) => {
                     Object.keys(v).forEach((k) => formSignal[k] = v[k]);
                 });
