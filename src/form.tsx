@@ -32,7 +32,6 @@ export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps
         if (p.signal instanceof Signal) {
             formSignal = useDeepSignal(p.signal.value);
             useEffect(()=>{
-                debugger;
                 (p.signal as Signal<T>).subscribe((v)=>{
                     Object.keys(v).forEach((k)=>formSignal[k] = v[k]);
                 })
