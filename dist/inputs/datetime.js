@@ -12,7 +12,7 @@ export function DateTimeInput(p) {
             var _a;
             console.log('Signal Subscribe', p.name, v);
             if (v) {
-                let dt = (_a = getDT(v)) === null || _a === void 0 ? void 0 : _a.setZone(p.timezone || 'local');
+                let dt = (_a = getDT(v)) === null || _a === void 0 ? void 0 : _a.setZone(p.timezone || 'local', { keepLocalTime: true });
                 // let dt = DateTime.fromISO(value.value);
                 dateSignal.value = dt === null || dt === void 0 ? void 0 : dt.toFormat('yyyy-MM-dd');
                 timeSignal.value = dt === null || dt === void 0 ? void 0 : dt.toFormat('HH:mm');
@@ -46,7 +46,7 @@ export function DateTimeInput(p) {
     };
     useEffect(() => {
         if (p.value) {
-            let dt = DateTime.fromISO(p.value).setZone(p.timezone || 'local');
+            let dt = DateTime.fromISO(p.value).setZone(p.timezone || 'local', { keepLocalTime: true });
             dateSignal.value = dt.toFormat('yyyy-MM-dd');
             timeSignal.value = dt.toFormat('HH:mm');
         }
@@ -55,7 +55,7 @@ export function DateTimeInput(p) {
         var _a;
         // console.log('value changed', value);
         if (value) {
-            let dt = (_a = getDT(value.value)) === null || _a === void 0 ? void 0 : _a.setZone(p.timezone || 'local');
+            let dt = (_a = getDT(value.value)) === null || _a === void 0 ? void 0 : _a.setZone(p.timezone || 'local', { keepLocalTime: true });
             // let dt = DateTime.fromISO(value.value);
             dateSignal.value = dt === null || dt === void 0 ? void 0 : dt.toFormat('yyyy-MM-dd');
             timeSignal.value = dt === null || dt === void 0 ? void 0 : dt.toFormat('HH:mm');
@@ -72,7 +72,7 @@ export function DateInput(p) {
     const onDateChange = (e) => {
         dateSignal.value = e.currentTarget.value;
         if (dateSignal.value) {
-            let dt = DateTime.fromISO(dateSignal.value).setZone(p.timezone || 'local');
+            let dt = DateTime.fromISO(dateSignal.value).setZone(p.timezone || 'local', { keepLocalTime: true });
             onChange({ currentTarget: { value: dt.toISO() } });
         }
         else {
@@ -84,7 +84,7 @@ export function DateInput(p) {
         if (p.value) {
             if (typeof p.value == "string") {
                 // assume string in iso format
-                const dt = DateTime.fromISO(p.value).setZone(p.timezone || 'local');
+                const dt = DateTime.fromISO(p.value).setZone(p.timezone || 'local', { keepLocalTime: true });
                 dateSignal.value = dt.toFormat('yyyy-MM-dd');
             }
         }
