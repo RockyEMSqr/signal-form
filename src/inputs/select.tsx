@@ -1,49 +1,77 @@
-import { TargetedEvent, useCallback } from "preact/compat";
+import { useCallback } from "preact/compat";
 import { useSignalFormInput } from "../hooks";
 import { GenericEvent, SelectInputProps } from "../types";
 
 export function SelectInput<ContainingType>(p: SelectInputProps<string | string[], ContainingType>) {
-    // export const SelectInput = (p: SelectInputProps<string>) => {
-    const { ctx, value, onChange, onKeyUp, inputState } = useSignalFormInput<string | string[] | { id: string }, ContainingType>(p)
-    // should i just {...p} the props?
+    const { value, onChange, onKeyUp, inputState } = useSignalFormInput<string | string[] | { id: string }, ContainingType>(p);
+    const {
+        label,
+        class: className,
+        items,
+        placeholder,
+        multiple,
+        onChange: _ignoredOnChange,
+        onKeyUp: _ignoredOnKeyUp,
+        ...rest
+    } = p;
+
     let oc: (e: GenericEvent<any>) => void = onChange;
-    if (p.multiple) {
+    if (multiple) {
         oc = useCallback((e: GenericEvent<HTMLSelectElement>) => {
-            let val = [];
-            for (let option of e.currentTarget.options) {
+            const val: string[] = [];
+            for (const option of e.currentTarget.options) {
                 if (option.selected) {
-                    val.push(option.value)
+                    val.push(option.value);
                 }
             }
             if (value) {
                 value.value = val;
             }
-        }, [])
+        }, []);
     }
-    // add class when validation error?
-    let classes: string[] = [];
-    p.class && classes.push(p.class);
-    inputState?.class && classes.push(inputState.class);
+
+    const classes = [className, inputState?.class].filter(Boolean).join(' ') || undefined;
+    const ariaInvalid = inputState?.valid === false ? true : undefined;
+
     const isSelected = useCallback((x: { value: string | number }) => {
-        if (typeof value.value == 'object' && !Array.isArray(value.value) && value.value?.id) {
-            return value.value.id == x.value;
+        if (!value) {
+            return false;
         }
-        return x.value ? Array.isArray(value?.value) ? value.value.includes(x?.value) : value?.value == x.value : false;
-    }, [value])
-    return <>
-        {p.label && <label for={p.id}>{p.label}</label>}
-        <select
-            required={p.required}
-            class={classes.join(' ')}
-            // value={value}
-            onChange={oc}
-            id={p.id}
-            // onKeyUp={onKeyUp}
-            multiple={p.multiple}
-        >
-            {p.placeholder && <option value="" selected={Array.isArray(value?.value) ? value.value.length === 0 : value?.value == undefined}>{p.placeholder}</option>}
-            {/* selected={value?.value?.includes(x.value)} */}
-            {p.items.map(x => <option selected={isSelected(x)} value={x.value}>{x.label}</option>)}
-        </select>
-    </>
+        if (typeof value.value == 'object' && !Array.isArray(value.value) && (value.value as any)?.id) {
+            return (value.value as any).id == x.value;
+        }
+        if (!x.value) {
+            return false;
+        }
+        return Array.isArray(value?.value)
+            ? (value.value as (string | number)[]).includes(x.value)
+            : value?.value == x.value;
+    }, [value]);
+
+    const hasValue = Array.isArray(value?.value) ? value.value.length > 0 : value?.value !== undefined;
+
+    return (
+        <>
+            {label && <label for={rest.id}>{label}</label>}
+            <select
+                {...rest}
+                class={classes}
+                onChange={oc}
+                onKeyUp={onKeyUp}
+                multiple={multiple}
+                aria-invalid={ariaInvalid}
+            >
+                {placeholder && (
+                    <option value="" selected={!hasValue}>
+                        {placeholder}
+                    </option>
+                )}
+                {items.map((x) => (
+                    <option key={x.value} selected={isSelected(x)} value={x.value}>
+                        {x.label}
+                    </option>
+                ))}
+            </select>
+        </>
+    );
 }

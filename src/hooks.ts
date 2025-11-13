@@ -85,7 +85,7 @@ export function useSignalFormInput<T, CO>(p: InputProps<T, CO>) {
         }, []);
 
         if (!p.id) {
-            p.id = `${p.id} ${ctx.ctxState.count++}`;
+            p.id = `${p.name || 'field'}-${ctx.ctxState.count++}`;
         }
         const validate = useCallback(() => {
             if (p.validate) {

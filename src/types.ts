@@ -1,4 +1,4 @@
-import { RenderableProps } from "preact";
+import { JSX, RenderableProps } from "preact";
 import { ChangeEvent, HTMLInputTypeAttribute } from "preact/compat"
 // import { NestedSignal } from "./form";
 import { Signal } from "@preact/signals";
@@ -321,11 +321,11 @@ type SignalInputProps<ValueType, ContainingType> = {
   validate?: (value: any) => boolean,
   label?: string
 }
-export type InputProps<ValueType, ContainingType = never> = RenderableProps<Partial<Omit<HTMLInputElement, "value">> & SignalInputProps<ValueType, ContainingType>>;
+export type InputProps<ValueType, ContainingType = never> = RenderableProps<Partial<Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "value">> & SignalInputProps<ValueType, ContainingType>>;
 // type Primitive = string | number;
 export type LabelValue = {
   label: string,
-  value: string
+  value: string | number
 }
 export type SelectInputProps<ValueType, ContainingType> = { items: LabelValue[] } & InputProps<ValueType, ContainingType>
 
