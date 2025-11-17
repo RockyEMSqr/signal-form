@@ -5,6 +5,7 @@ import { useEffect } from "preact/compat";
 import { DateTime } from 'luxon';
 import { getDT } from "../utils";
 export function DateTimeInput(p) {
+    var _a;
     const { value, inputState, onChange } = useSignalFormInput(p);
     const dateSignal = useSignal('');
     const timeSignal = useSignal('');
@@ -83,7 +84,7 @@ export function DateTimeInput(p) {
     }, [p.value, timezone]);
     return _jsxs(_Fragment, { children: [_jsxs("div", { class: 'row', "aria-invalid": ariaInvalid, children: [p.label && _jsx("label", { for: dateInputId, children: p.label }), _jsxs("div", { class: 'col-6', children: [p.dateLabel && _jsx("label", { for: dateInputId, children: p.dateLabel }), _jsx("input", { type: "date", class: classes, value: dateSignal, onChange: onDateChange, id: dateInputId, required: p.required, "aria-invalid": ariaInvalid })] }), _jsxs("div", { class: 'col-6', children: [p.timeLabel && _jsx("label", { for: timeInputId, children: p.timeLabel }), _jsx("input", { type: "time", class: classes, value: timeSignal, onKeyUp: e => {
                                     timeSignal.value = e.currentTarget.value;
-                                }, onChange: onTimeChange, id: timeInputId, required: p.required, "aria-invalid": ariaInvalid })] })] }), p.name && _jsx("input", { type: "hidden", name: p.name, value: (value === null || value === void 0 ? void 0 : value.value) || '' })] });
+                                }, onChange: onTimeChange, id: timeInputId, required: p.required, "aria-invalid": ariaInvalid })] })] }), p.name && _jsx("input", { type: "hidden", name: p.name, value: ((_a = value === null || value === void 0 ? void 0 : value.value) === null || _a === void 0 ? void 0 : _a.valueOf()) || '' })] });
 }
 export function DateInput(p) {
     const { value, onChange, inputState } = useSignalFormInput(p);
@@ -113,11 +114,19 @@ export function DateInput(p) {
         dateSignal.value = e.currentTarget.value;
         if (dateSignal.value) {
             let dt = DateTime.fromISO(dateSignal.value).setZone(timezone, { keepLocalTime: true });
-            onChange({ currentTarget: { value: dt.toISO() } });
+            const syntheticEvent = {
+                currentTarget: { value: dt.toISO() },
+                target: { value: dt.toISO() }
+            };
+            onChange(syntheticEvent);
         }
         else {
+            const syntheticEvent = {
+                currentTarget: { value: '' },
+                target: { value: '' }
+            };
             // handle clear button
-            onChange({ currentTarget: { value: '' } });
+            onChange(syntheticEvent);
         }
     };
     useEffect(() => {

@@ -42,11 +42,11 @@ export function DateTimeInput<ContainingType = never>(p: InputProps<string | Dat
         timeSignal.value = e.currentTarget.value;
         combineAndCallOnChange();
     }
-    const emitSyntheticChange = (nextValue: string, jsDate?: Date) => {
+    const emitSyntheticChange = (nextValue: string | null, jsDate?: Date) => {
         const syntheticEvent = {
             currentTarget: { value: nextValue },
             target: { value: nextValue }
-        } as ChangeEvent<HTMLInputElement>;
+        } as any as ChangeEvent<HTMLInputElement>;
         const originalOnChange = p.onChange;
         p.onChange = undefined;
         onChange(syntheticEvent);
@@ -110,7 +110,7 @@ export function DateTimeInput<ContainingType = never>(p: InputProps<string | Dat
                 />
             </div>
         </div>
-        {p.name && <input type="hidden" name={p.name} value={value?.value || ''} />}
+        {p.name && <input type="hidden" name={p.name} value={value?.value?.valueOf() || ''} />}
     </>
 }
 type DateOrString = Date | string;
@@ -142,10 +142,18 @@ export function DateInput<ContainingType = never>(p: InputProps<Date | string, C
         dateSignal.value = e.currentTarget.value;
         if (dateSignal.value) {
             let dt = DateTime.fromISO(dateSignal.value).setZone(timezone, { keepLocalTime: true });
-            onChange({ currentTarget: { value: dt.toISO()! } });
+            const syntheticEvent = {
+                currentTarget: { value: dt.toISO()! },
+                target: { value: dt.toISO()! }
+            } as any as ChangeEvent<HTMLInputElement>;
+            onChange(syntheticEvent);
         } else {
+            const syntheticEvent = {
+                currentTarget: { value: '' },
+                target: { value: '' }
+            } as any as ChangeEvent<HTMLInputElement>;
             // handle clear button
-            onChange({ currentTarget: { value: '' } });
+            onChange(syntheticEvent);
         }
     };
     useEffect(() => {
