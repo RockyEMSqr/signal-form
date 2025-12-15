@@ -100,5 +100,5 @@ export const SignalForm = (p) => {
         }),
         formState: formState
     };
-    return (_jsx(SignalFormCtx.Provider, { value: ctx, children: _jsx("form", { class: p.class, onSubmit: onSubmit, children: p.children }) }));
+    return (_jsx(SignalFormCtx.Provider, { value: ctx, children: _jsx("form", { class: p.class, id: p.id, onSubmit: onSubmit, children: p.children }) }));
 };

@@ -8,6 +8,7 @@ export type SignalFormProps<T> = {
     initData?: Partial<T> | undefined;
     signal?: Signal<T> | DeepSignal<T>;
     formState?: DeepSignal<FormState>;
+    id?: string;
     class?: string;
 };
 type DotPrefix<T extends string> = T extends '' ? '' : `.${T}`;

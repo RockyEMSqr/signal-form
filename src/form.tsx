@@ -108,7 +108,7 @@ export const SignalForm = <T extends object,>(p: RenderableProps<SignalFormProps
         formState: formState
     }
     return (<SignalFormCtx.Provider value={ctx}>
-        <form class={p.class} onSubmit={onSubmit}>
+        <form class={p.class} id={p.id} onSubmit={onSubmit}>
             {/* {processChildren(p.children)}
              */}
             {p.children}
