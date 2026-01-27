@@ -20,15 +20,17 @@ export function DateTimeInput<ContainingType = never>(p: InputProps<string | Dat
             return;
         }
         const syncFromSignal = (v: string | Date | undefined) => {
-            if (!v) {
-                return;
-            }
-            
-            // console.log('sync:', v);
-            const dt = getDT(v)?.setZone(timezone);
-            dateSignal.value = dt?.toFormat('yyyy-MM-dd') || '';
-            timeSignal.value = dt?.toFormat('HH:mm') || '';
-            // console.log(dateSignal.value, timeSignal.value);
+            if (!v) return;
+
+            let dt = typeof v === "string"
+                ? DateTime.fromISO(v, { setZone: true })   // respect offset in the string
+                : DateTime.fromJSDate(v);
+
+            if (!dt.isValid) return;
+
+            dt = dt.setZone(timezone); // IMPORTANT: no keepLocalTime
+            dateSignal.value = dt.toFormat("yyyy-MM-dd");
+            timeSignal.value = dt.toFormat("HH:mm");
         };
         syncFromSignal(value.value);
         const dispose = value.subscribe(syncFromSignal);
@@ -57,39 +59,32 @@ export function DateTimeInput<ContainingType = never>(p: InputProps<string | Dat
         originalOnChange && originalOnChange(syntheticEvent, jsDate);
     };
     let combineAndCallOnChange = () => {
-        if (!value) {
-            return;
-        }
+        if (!value) return;
         if (dateSignal.value && timeSignal.value) {
-            let dt = DateTime.fromISO(dateSignal.value).setZone(timezone, { keepLocalTime: true });
-            
-            const timeSplit = timeSignal.value.split(':').map(x => Number(x));
-            dt = dt.set({ hour: timeSplit[0], minute: timeSplit[1] });
+            const [hour, minute] = timeSignal.value.split(':').map(Number);
 
+            // Interpret dateSignal as a calendar day in the desired zone (wall time)
+            let dt = DateTime.fromISO(dateSignal.value, { zone: timezone })
+                .set({ hour, minute, second: 0, millisecond: 0 });
+
+            // Serialize INCLUDING the offset (so it round-trips)
             const nextValue = dt.toISO({ includeOffset: true, suppressMilliseconds: true });
-            emitSyntheticChange(nextValue, new Date(nextValue!));
+            emitSyntheticChange(nextValue /* no JS Date */);
         }
-    }
+    };
     useEffect(() => {
-        if (!p.value) {
-            return;
-        }
-        let dt: DateTime | undefined;
-        if (typeof p.value === 'string') {
-            dt = DateTime.fromISO(p.value);
-            dt = DateTime.fromISO(p.value, { setZone: true });
-        } else if (p.value instanceof Date) {
-            dt = DateTime.fromJSDate(p.value);
-            // dt = DateTime.fromJSDate(p.value, {zone:timezone});
-        }
-        if (!dt?.isValid) {
-            return;
-        }
-        dt = dt.setZone(timezone, { keepLocalTime: true });
-        // dt = dt.setZone(timezone);
-        dateSignal.value = dt.toFormat('yyyy-MM-dd');
-        timeSignal.value = dt.toFormat('HH:mm');
-    }, [p.value, timezone])
+        if (!p.value) return;
+
+        let dt = typeof p.value === "string"
+            ? DateTime.fromISO(p.value, { setZone: true })
+            : DateTime.fromJSDate(p.value);
+
+        if (!dt?.isValid) return;
+
+        dt = dt.setZone(timezone);
+        dateSignal.value = dt.toFormat("yyyy-MM-dd");
+        timeSignal.value = dt.toFormat("HH:mm");
+    }, [p.value, timezone]);
     return <>
         <div class='row' aria-invalid={ariaInvalid}>
             {p.label && <label for={dateInputId}>{p.label}</label>}

@@ -3,7 +3,6 @@ import { useSignal } from "@preact/signals";
 import { useSignalFormInput } from "../hooks";
 import { useEffect } from "preact/compat";
 import { DateTime } from 'luxon';
-import { getDT } from "../utils";
 export function DateTimeInput(p) {
     var _a;
     const { value, inputState, onChange } = useSignalFormInput(p);
@@ -19,15 +18,16 @@ export function DateTimeInput(p) {
             return;
         }
         const syncFromSignal = (v) => {
-            var _a;
-            if (!v) {
+            if (!v)
                 return;
-            }
-            // console.log('sync:', v);
-            const dt = (_a = getDT(v)) === null || _a === void 0 ? void 0 : _a.setZone(timezone);
-            dateSignal.value = (dt === null || dt === void 0 ? void 0 : dt.toFormat('yyyy-MM-dd')) || '';
-            timeSignal.value = (dt === null || dt === void 0 ? void 0 : dt.toFormat('HH:mm')) || '';
-            // console.log(dateSignal.value, timeSignal.value);
+            let dt = typeof v === "string"
+                ? DateTime.fromISO(v, { setZone: true }) // respect offset in the string
+                : DateTime.fromJSDate(v);
+            if (!dt.isValid)
+                return;
+            dt = dt.setZone(timezone); // IMPORTANT: no keepLocalTime
+            dateSignal.value = dt.toFormat("yyyy-MM-dd");
+            timeSignal.value = dt.toFormat("HH:mm");
         };
         syncFromSignal(value.value);
         const dispose = value.subscribe(syncFromSignal);
@@ -55,37 +55,29 @@ export function DateTimeInput(p) {
         originalOnChange && originalOnChange(syntheticEvent, jsDate);
     };
     let combineAndCallOnChange = () => {
-        if (!value) {
+        if (!value)
             return;
-        }
         if (dateSignal.value && timeSignal.value) {
-            let dt = DateTime.fromISO(dateSignal.value).setZone(timezone, { keepLocalTime: true });
-            const timeSplit = timeSignal.value.split(':').map(x => Number(x));
-            dt = dt.set({ hour: timeSplit[0], minute: timeSplit[1] });
+            const [hour, minute] = timeSignal.value.split(':').map(Number);
+            // Interpret dateSignal as a calendar day in the desired zone (wall time)
+            let dt = DateTime.fromISO(dateSignal.value, { zone: timezone })
+                .set({ hour, minute, second: 0, millisecond: 0 });
+            // Serialize INCLUDING the offset (so it round-trips)
             const nextValue = dt.toISO({ includeOffset: true, suppressMilliseconds: true });
-            emitSyntheticChange(nextValue, new Date(nextValue));
+            emitSyntheticChange(nextValue /* no JS Date */);
         }
     };
     useEffect(() => {
-        if (!p.value) {
+        if (!p.value)
             return;
-        }
-        let dt;
-        if (typeof p.value === 'string') {
-            dt = DateTime.fromISO(p.value);
-            dt = DateTime.fromISO(p.value, { setZone: true });
-        }
-        else if (p.value instanceof Date) {
-            dt = DateTime.fromJSDate(p.value);
-            // dt = DateTime.fromJSDate(p.value, {zone:timezone});
-        }
-        if (!(dt === null || dt === void 0 ? void 0 : dt.isValid)) {
+        let dt = typeof p.value === "string"
+            ? DateTime.fromISO(p.value, { setZone: true })
+            : DateTime.fromJSDate(p.value);
+        if (!(dt === null || dt === void 0 ? void 0 : dt.isValid))
             return;
-        }
-        dt = dt.setZone(timezone, { keepLocalTime: true });
-        // dt = dt.setZone(timezone);
-        dateSignal.value = dt.toFormat('yyyy-MM-dd');
-        timeSignal.value = dt.toFormat('HH:mm');
+        dt = dt.setZone(timezone);
+        dateSignal.value = dt.toFormat("yyyy-MM-dd");
+        timeSignal.value = dt.toFormat("HH:mm");
     }, [p.value, timezone]);
     return _jsxs(_Fragment, { children: [_jsxs("div", { class: 'row', "aria-invalid": ariaInvalid, children: [p.label && _jsx("label", { for: dateInputId, children: p.label }), _jsxs("div", { class: 'col-6', children: [p.dateLabel && _jsx("label", { for: dateInputId, children: p.dateLabel }), _jsx("input", { type: "date", class: classes, value: dateSignal, onChange: onDateChange, id: dateInputId, required: p.required, "aria-invalid": ariaInvalid })] }), _jsxs("div", { class: 'col-6', children: [p.timeLabel && _jsx("label", { for: timeInputId, children: p.timeLabel }), _jsx("input", { type: "time", class: classes, value: timeSignal, onKeyUp: e => {
                                     timeSignal.value = e.currentTarget.value;
