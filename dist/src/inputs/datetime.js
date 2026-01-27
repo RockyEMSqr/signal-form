@@ -23,9 +23,11 @@ export function DateTimeInput(p) {
             if (!v) {
                 return;
             }
-            const dt = (_a = getDT(v)) === null || _a === void 0 ? void 0 : _a.setZone(timezone, { keepLocalTime: true });
+            // console.log('sync:', v);
+            const dt = (_a = getDT(v)) === null || _a === void 0 ? void 0 : _a.setZone(timezone);
             dateSignal.value = (dt === null || dt === void 0 ? void 0 : dt.toFormat('yyyy-MM-dd')) || '';
             timeSignal.value = (dt === null || dt === void 0 ? void 0 : dt.toFormat('HH:mm')) || '';
+            // console.log(dateSignal.value, timeSignal.value);
         };
         syncFromSignal(value.value);
         const dispose = value.subscribe(syncFromSignal);
@@ -61,7 +63,7 @@ export function DateTimeInput(p) {
             const timeSplit = timeSignal.value.split(':').map(x => Number(x));
             dt = dt.set({ hour: timeSplit[0], minute: timeSplit[1] });
             const nextValue = dt.toISO({ includeOffset: true, suppressMilliseconds: true });
-            emitSyntheticChange(nextValue, dt.toJSDate());
+            emitSyntheticChange(nextValue, new Date(nextValue));
         }
     };
     useEffect(() => {
@@ -70,18 +72,18 @@ export function DateTimeInput(p) {
         }
         let dt;
         if (typeof p.value === 'string') {
-            // dt = DateTime.fromISO(p.value);
+            dt = DateTime.fromISO(p.value);
             dt = DateTime.fromISO(p.value, { setZone: true });
         }
         else if (p.value instanceof Date) {
-            // dt = DateTime.fromJSDate(p.value);
-            dt = DateTime.fromJSDate(p.value, { zone: timezone });
+            dt = DateTime.fromJSDate(p.value);
+            // dt = DateTime.fromJSDate(p.value, {zone:timezone});
         }
         if (!(dt === null || dt === void 0 ? void 0 : dt.isValid)) {
             return;
         }
-        // dt = dt.setZone(timezone, { keepLocalTime: true });
-        dt = dt.setZone(timezone);
+        dt = dt.setZone(timezone, { keepLocalTime: true });
+        // dt = dt.setZone(timezone);
         dateSignal.value = dt.toFormat('yyyy-MM-dd');
         timeSignal.value = dt.toFormat('HH:mm');
     }, [p.value, timezone]);
