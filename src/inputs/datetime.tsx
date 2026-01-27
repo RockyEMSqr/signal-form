@@ -73,14 +73,17 @@ export function DateTimeInput<ContainingType = never>(p: InputProps<string | Dat
         }
         let dt: DateTime | undefined;
         if (typeof p.value === 'string') {
-            dt = DateTime.fromISO(p.value);
+            // dt = DateTime.fromISO(p.value);
+            dt = DateTime.fromISO(p.value, { setZone: true });
         } else if (p.value instanceof Date) {
-            dt = DateTime.fromJSDate(p.value);
+            // dt = DateTime.fromJSDate(p.value);
+            dt = DateTime.fromJSDate(p.value, {zone:timezone});
         }
         if (!dt?.isValid) {
             return;
         }
-        dt = dt.setZone(timezone, { keepLocalTime: true });
+        // dt = dt.setZone(timezone, { keepLocalTime: true });
+        dt = dt.setZone(timezone);
         dateSignal.value = dt.toFormat('yyyy-MM-dd');
         timeSignal.value = dt.toFormat('HH:mm');
     }, [p.value, timezone])

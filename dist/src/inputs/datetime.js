@@ -70,15 +70,18 @@ export function DateTimeInput(p) {
         }
         let dt;
         if (typeof p.value === 'string') {
-            dt = DateTime.fromISO(p.value);
+            // dt = DateTime.fromISO(p.value);
+            dt = DateTime.fromISO(p.value, { setZone: true });
         }
         else if (p.value instanceof Date) {
-            dt = DateTime.fromJSDate(p.value);
+            // dt = DateTime.fromJSDate(p.value);
+            dt = DateTime.fromJSDate(p.value, { zone: timezone });
         }
         if (!(dt === null || dt === void 0 ? void 0 : dt.isValid)) {
             return;
         }
-        dt = dt.setZone(timezone, { keepLocalTime: true });
+        // dt = dt.setZone(timezone, { keepLocalTime: true });
+        dt = dt.setZone(timezone);
         dateSignal.value = dt.toFormat('yyyy-MM-dd');
         timeSignal.value = dt.toFormat('HH:mm');
     }, [p.value, timezone]);
