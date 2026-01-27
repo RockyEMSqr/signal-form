@@ -60,7 +60,7 @@ export function DateTimeInput(p) {
             let dt = DateTime.fromISO(dateSignal.value).setZone(timezone, { keepLocalTime: true });
             const timeSplit = timeSignal.value.split(':').map(x => Number(x));
             dt = dt.set({ hour: timeSplit[0], minute: timeSplit[1] });
-            const nextValue = dt.toJSON();
+            const nextValue = dt.toISO({ includeOffset: true, suppressMilliseconds: true });
             emitSyntheticChange(nextValue, dt.toJSDate());
         }
     };
