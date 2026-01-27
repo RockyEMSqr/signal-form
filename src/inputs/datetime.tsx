@@ -23,9 +23,12 @@ export function DateTimeInput<ContainingType = never>(p: InputProps<string | Dat
             if (!v) {
                 return;
             }
-            const dt = getDT(v)?.setZone(timezone, { keepLocalTime: true });
+            
+            // console.log('sync:', v);
+            const dt = getDT(v)?.setZone(timezone);
             dateSignal.value = dt?.toFormat('yyyy-MM-dd') || '';
             timeSignal.value = dt?.toFormat('HH:mm') || '';
+            // console.log(dateSignal.value, timeSignal.value);
         };
         syncFromSignal(value.value);
         const dispose = value.subscribe(syncFromSignal);
@@ -64,7 +67,7 @@ export function DateTimeInput<ContainingType = never>(p: InputProps<string | Dat
             dt = dt.set({ hour: timeSplit[0], minute: timeSplit[1] });
 
             const nextValue = dt.toISO({ includeOffset: true, suppressMilliseconds: true });
-            emitSyntheticChange(nextValue, dt.toJSDate());
+            emitSyntheticChange(nextValue, new Date(nextValue!));
         }
     }
     useEffect(() => {
@@ -73,17 +76,17 @@ export function DateTimeInput<ContainingType = never>(p: InputProps<string | Dat
         }
         let dt: DateTime | undefined;
         if (typeof p.value === 'string') {
-            // dt = DateTime.fromISO(p.value);
+            dt = DateTime.fromISO(p.value);
             dt = DateTime.fromISO(p.value, { setZone: true });
         } else if (p.value instanceof Date) {
-            // dt = DateTime.fromJSDate(p.value);
-            dt = DateTime.fromJSDate(p.value, {zone:timezone});
+            dt = DateTime.fromJSDate(p.value);
+            // dt = DateTime.fromJSDate(p.value, {zone:timezone});
         }
         if (!dt?.isValid) {
             return;
         }
-        // dt = dt.setZone(timezone, { keepLocalTime: true });
-        dt = dt.setZone(timezone);
+        dt = dt.setZone(timezone, { keepLocalTime: true });
+        // dt = dt.setZone(timezone);
         dateSignal.value = dt.toFormat('yyyy-MM-dd');
         timeSignal.value = dt.toFormat('HH:mm');
     }, [p.value, timezone])
