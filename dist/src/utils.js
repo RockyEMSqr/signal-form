@@ -1,6 +1,9 @@
 import { Signal } from "@preact/signals";
 import { DateTime } from "luxon";
 export function dset(obj, keys, val) {
+    if (!obj) {
+        return;
+    }
     keys.split && (keys = keys.split('.'));
     var i = 0, l = keys.length, t = obj, x;
     for (; i < l; ++i) {

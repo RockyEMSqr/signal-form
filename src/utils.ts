@@ -4,6 +4,9 @@ import dlv from 'dlv'
 import { DateTime, Zone } from "luxon";
 
 export function dset(obj: any, keys: string | any, val: any) {
+    if(!obj){
+        return;
+    }
     keys.split && (keys = keys.split('.'));
     var i = 0, l = keys.length, t = obj, x;
     for (; i < l; ++i) {
