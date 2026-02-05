@@ -3,15 +3,7 @@ import { KeyboardEvent } from "preact/compat";
 import { GenericEvent, InputProps } from "./types";
 import { Signal } from "@preact/signals";
 export declare function useSignalForm(): {
-    formState: {
-        $submitting?: Signal<boolean> | undefined;
-        $submitted?: Signal<boolean> | undefined;
-        $submittedCount?: Signal<number> | undefined;
-    } & {
-        submitting: boolean;
-        submitted: boolean;
-        submittedCount: number;
-    };
+    formState: any;
 };
 export declare function useSignalFormInput<T, CO>(p: InputProps<T, CO>): {
     ctx: import("./context").SignalFormContextData<any>;

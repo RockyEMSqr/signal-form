@@ -19,19 +19,21 @@ import { useDeepSignal } from 'deepsignal';
 //     return reactive;
 // }
 // I dont know if A Form parent container is a good idea but probably is
-export const SignalForm = (p) => {
+export function SignalForm(p) {
     if (!p) {
         return _jsx(_Fragment, {});
     }
     let formSignal = p.signal || useDeepSignal(p.initData || {}); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
     let formState = p.formState || useDeepSignal({ submittedCount: 0 });
+    formState.formDataSignal = formSignal;
     if (p.signal) {
         if (p.signal instanceof Signal) {
             formSignal = useDeepSignal(p.signal.value);
             useEffect(() => {
-                p.signal.subscribe((v) => {
+                const unsub = p.signal.subscribe((v) => {
                     Object.keys(v).forEach((k) => formSignal[k] = v[k]);
                 });
+                return unsub;
             }, []);
         }
     }
@@ -101,4 +103,4 @@ export const SignalForm = (p) => {
         formState: formState
     };
     return (_jsx(SignalFormCtx.Provider, { value: ctx, children: _jsx("form", { class: p.class, id: p.id, onSubmit: onSubmit, children: p.children }) }));
-};
+}
