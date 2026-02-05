@@ -1,6 +1,6 @@
 {
   "name": "signal-form",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",

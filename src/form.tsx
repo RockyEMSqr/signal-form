@@ -28,7 +28,7 @@ export function SignalForm<T extends object>(p: RenderableProps<SignalFormProps<
     }
     let formSignal = p.signal || useDeepSignal(p.initData as T || {} as T); //|| toMappedSignal(p.initData as any || {})//useDeepSignal<T>(p.initData as any || {});
     let formState = p.formState || useDeepSignal<FormState<T>>({ submittedCount: 0 } as any)
-    formState.formDataSignal = formSignal as DeepSignal<T>;
+    formState.formDataSignal = formSignal;
     if (p.signal) {
         if (p.signal instanceof Signal) {
             formSignal = useDeepSignal(p.signal.value);
