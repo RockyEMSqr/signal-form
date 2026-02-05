@@ -12,6 +12,7 @@ export function useSignalForm() {
         submittedCount: 0,
         submitted: false,
         submitting: false,
+        formDataSignal: undefined
     });
     return {
         formState

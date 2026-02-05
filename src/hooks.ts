@@ -9,10 +9,11 @@ import { Signal, useSignal } from "@preact/signals";
 import { useDeepSignal } from "deepsignal";
 const debug = process?.env?.DEBUG;
 export function useSignalForm() {
-    const formState = useDeepSignal<FormState>({
+    const formState = useDeepSignal<FormState<any>>({
         submittedCount: 0,
         submitted: false,
         submitting: false,
+        formDataSignal: undefined
     })
     return {
         formState
