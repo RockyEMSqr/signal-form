@@ -22,6 +22,7 @@ export function useSignalForm() {
 export function useSignalFormInput<T, CO>(p: InputProps<T, CO>) {
     return useMemo(() => {
         const ctx = useContext(SignalFormCtx);
+        ctx.fieldMap = ctx.fieldMap || {};
         let mapv = {} as SignalFormFieldState<T>;
         if (p.name) {
             ctx.fieldMap[p.name] = ctx.fieldMap[p.name] || useDeepSignal({ name: p.name, props: p });
