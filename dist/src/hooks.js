@@ -23,6 +23,7 @@ export function useSignalFormInput(p) {
         var _a;
         const ctx = useContext(SignalFormCtx);
         ctx.fieldMap = ctx.fieldMap || {};
+        ctx.ctxState = ctx.ctxState || { count: 0 };
         let mapv = {};
         if (p.name) {
             ctx.fieldMap[p.name.toString()] = ctx.fieldMap[p.name.toString()] || useDeepSignal({ name: p.name, props: p });
