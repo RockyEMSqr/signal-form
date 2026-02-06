@@ -20,18 +20,19 @@ export function useSignalForm() {
 }
 export function useSignalFormInput(p) {
     return useMemo(() => {
+        var _a;
         const ctx = useContext(SignalFormCtx);
         ctx.fieldMap = ctx.fieldMap || {};
         let mapv = {};
         if (p.name) {
-            ctx.fieldMap[p.name] = ctx.fieldMap[p.name] || useDeepSignal({ name: p.name, props: p });
-            mapv = ctx.fieldMap[p.name];
+            ctx.fieldMap[p.name.toString()] = ctx.fieldMap[p.name.toString()] || useDeepSignal({ name: p.name, props: p });
+            mapv = ctx.fieldMap[p.name.toString()];
         }
         // let mapv = useInputState(p.name)
         useEffect(() => {
             var _a;
             if (debug) {
-                console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', !p.name ? 'No Name' : dlv(ctx.data, p.name), typeof p.value, (_a = ctx.data) === null || _a === void 0 ? void 0 : _a.value);
+                console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', !p.name ? 'No Name' : dlv(ctx.data, p.name.toString()), typeof p.value, (_a = ctx.data) === null || _a === void 0 ? void 0 : _a.value);
             }
         }, [[p.value]]);
         let inputSignal = useGetInputSignal(p);
@@ -81,7 +82,7 @@ export function useSignalFormInput(p) {
             p.onKeyUp && p.onKeyUp(e);
         }, []);
         if (!p.id) {
-            p.id = `${p.name || 'field'}-${ctx.ctxState.count++}`;
+            p.id = `${((_a = p.name) === null || _a === void 0 ? void 0 : _a.toString()) || 'field'}-${ctx.ctxState.count++}`;
         }
         const validate = useCallback(() => {
             if (p.validate) {
@@ -106,12 +107,13 @@ export function useSignalFormInput(p) {
     }, []);
 }
 export function useGetInputSignal(p) {
+    var _a, _b;
     const ctx = useContext(SignalFormCtx);
     let inputSignal = p.signal;
     let valVal = p.value;
     if (p.name) {
         if (p.signal) {
-            inputSignal = getSignal(inputSignal, p.name);
+            inputSignal = getSignal(inputSignal, (_a = p.name) === null || _a === void 0 ? void 0 : _a.toString());
             if ((inputSignal === null || inputSignal === void 0 ? void 0 : inputSignal.value) === undefined) {
                 // if target doesn't have key, make it create it by setting something
                 //* if not in target put something in there.
@@ -119,7 +121,7 @@ export function useGetInputSignal(p) {
             }
         }
         else {
-            inputSignal = getSignal(ctx.data, p.name);
+            inputSignal = getSignal(ctx.data, (_b = p.name) === null || _b === void 0 ? void 0 : _b.toString());
             // if target doesn't have key, make it create it by setting something
             //* if not in target put something in there.
             if ((inputSignal === null || inputSignal === void 0 ? void 0 : inputSignal.value) === undefined) {

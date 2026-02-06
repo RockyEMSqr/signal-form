@@ -25,13 +25,13 @@ export function useSignalFormInput<T, CO>(p: InputProps<T, CO>) {
         ctx.fieldMap = ctx.fieldMap || {};
         let mapv = {} as SignalFormFieldState<T>;
         if (p.name) {
-            ctx.fieldMap[p.name] = ctx.fieldMap[p.name] || useDeepSignal({ name: p.name, props: p });
-            mapv = ctx.fieldMap[p.name];
+            ctx.fieldMap[p.name.toString()] = ctx.fieldMap[p.name.toString()] || useDeepSignal({ name: p.name, props: p });
+            mapv = ctx.fieldMap[p.name.toString()];
         }
         // let mapv = useInputState(p.name)
         useEffect(() => {
             if (debug) {
-                console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', !p.name ? 'No Name' : dlv(ctx.data, p.name), typeof p.value, ctx.data?.value)
+                console.log('Hook use Effect', 'p.name', p.name, 'p.value', p.value, 'dlv val', !p.name ? 'No Name' : dlv(ctx.data, p.name.toString()), typeof p.value, ctx.data?.value)
             }
 
         }, [[p.value]]);
@@ -87,7 +87,7 @@ export function useSignalFormInput<T, CO>(p: InputProps<T, CO>) {
         }, []);
 
         if (!p.id) {
-            p.id = `${p.name || 'field'}-${ctx.ctxState.count++}`;
+            p.id = `${p.name?.toString() || 'field'}-${ctx.ctxState.count++}`;
         }
         const validate = useCallback(() => {
             if (p.validate) {
@@ -117,14 +117,14 @@ export function useGetInputSignal<T, CO>(p: InputProps<T, CO>) {
     let valVal = p.value;
     if (p.name) {
         if (p.signal) {
-            inputSignal = getSignal(inputSignal, p.name);
+            inputSignal = getSignal(inputSignal, p.name?.toString());
             if (inputSignal?.value === undefined) {
                 // if target doesn't have key, make it create it by setting something
                 //* if not in target put something in there.
                 dset(inputSignal, p.name, undefined);
             }
         } else {
-            inputSignal = getSignal(ctx.data, p.name);
+            inputSignal = getSignal(ctx.data, p.name?.toString());
             // if target doesn't have key, make it create it by setting something
             //* if not in target put something in there.
             if (inputSignal?.value === undefined) {
