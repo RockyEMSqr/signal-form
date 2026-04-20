@@ -38,6 +38,7 @@ export function useSignalFormInput<T, CO>(p: InputProps<T, CO>) {
         }, [[p.value]]);
 
         let inputSignal = useGetInputSignal<T, CO>(p);
+        inputSignal.subscribe(v=>console.log(p.name, v))
         // let inputSignal = p.signal;
         // let valVal = p.value;
         // if (p.signal) {

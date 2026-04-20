@@ -6,7 +6,22 @@ import { LoadDataLater } from './examples/loadDataLater'
 import { WysiwygEx } from './examples/wysiwyg'
 import { AddressEx } from './examples/address'
 import { ReactiveTest } from './examples/reactiveTest'
+import { SignalForm, TextInput, useSignalForm } from '../../src'
+import { useEffect } from 'preact/hooks'
 export function App() {
+  const {formState}= useSignalForm();
+
+  useEffect(()=>{
+    (async ()=>{
+      setTimeout(()=>{
+        // debugger;
+        // formState.formDataSignal.value = formState.formDataSignal.value || {};
+        // formState.formDataSignal.value.name = formState.formDataSignal.value.name || {};
+        formState.formDataSignal.name.first = 'FOOOOOOOO';
+        formState.formDataSignal.firstName = 'FOOOOOAGAIN'
+      }, 5000)
+    })()
+  }, [])
   return <LocationProvider>
     <ul>
       <li><a href="/loadDataLater/">Load Data Later</a></li>
@@ -18,6 +33,17 @@ export function App() {
       <li><a href="/reactivetest">Reactive Test</a></li>
     </ul>
     <ErrorBoundary>
+
+      <SignalForm formState={formState} onSubmit={(e,d)=>{
+        console.log(d)
+      }}>
+        <button onClick={e=>{
+          console.log(formState)
+        }} type="button">Console signal</button>
+        <TextInput name="name.first" label="First Name"></TextInput>
+        <TextInput name="firstName" label="First Name"></TextInput>
+        <button>Console</button>
+      </SignalForm>
       <Router>
         {/* <Home path="/" /> */}
         {/* Alternative dedicated route component for better TS support */}
