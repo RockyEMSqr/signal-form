@@ -9,17 +9,17 @@ import { ReactiveTest } from './examples/reactiveTest'
 import { SignalForm, TextInput, useSignalForm } from '../../src'
 import { useEffect } from 'preact/hooks'
 export function App() {
-  const {formState}= useSignalForm();
+  const { formState } = useSignalForm();
 
-  useEffect(()=>{
-    (async ()=>{
-      setTimeout(()=>{
+  useEffect(() => {
+    (async () => {
+      setInterval(() => {
         // debugger;
         // formState.formDataSignal.value = formState.formDataSignal.value || {};
         // formState.formDataSignal.value.name = formState.formDataSignal.value.name || {};
-        formState.formDataSignal.name.first = 'FOOOOOOOO';
-        formState.formDataSignal.firstName = 'FOOOOOAGAIN'
-      }, 5000)
+        formState.formDataSignal.name.first = Date.now();
+        formState.formDataSignal.firstName = Date.now()
+      }, 1000)
     })()
   }, [])
   return <LocationProvider>
@@ -34,10 +34,10 @@ export function App() {
     </ul>
     <ErrorBoundary>
 
-      <SignalForm formState={formState} onSubmit={(e,d)=>{
+      <SignalForm formState={formState} onSubmit={(e, d) => {
         console.log(d)
       }}>
-        <button onClick={e=>{
+        <button onClick={e => {
           console.log(formState)
         }} type="button">Console signal</button>
         <TextInput name="name.first" label="First Name"></TextInput>
