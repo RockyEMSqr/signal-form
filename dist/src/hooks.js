@@ -37,6 +37,7 @@ export function useSignalFormInput(p) {
             }
         }, [[p.value]]);
         let inputSignal = useGetInputSignal(p);
+        // inputSignal.subscribe(v=>console.log(p.name, v))
         // let inputSignal = p.signal;
         // let valVal = p.value;
         // if (p.signal) {
@@ -136,10 +137,12 @@ export function useGetInputSignal(p) {
     if (!inputSignal) {
         inputSignal = useSignal(valVal || '');
         // fixes bug#1
-        // set the input signal in the data
+        // set the input signal in the data using the deepsignal `$`-prefixed key
         if (p.name) {
-            //fixes bug #2 only set if it has a name
-            dset(ctx.data, p.name, inputSignal);
+            const parts = p.name.toString().split('.');
+            const last = parts.pop();
+            const path = parts.concat('$' + last).join('.');
+            dset(ctx.data, path, inputSignal);
         }
     }
     return inputSignal;
