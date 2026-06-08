@@ -5,22 +5,28 @@ import { useSignalFormInput } from '../hooks';
 import { InputProps } from '../types';
 import type { JSX } from 'preact/jsx-runtime';
 export function RichTextAreaInput<ContainingType>(p: InputProps<string, ContainingType> & { toolbarAdditions?: JSX.Element[] }) {
-    const { ctx, value, onChange, onKeyUp, inputState } = useSignalFormInput(p)
+    const { value, onChange } = useSignalFormInput(p)
     const editorRef = useRef<RichTextArea>(null);
     useEffect(() => {
-        editorRef.current.componentDidUpdate();
+        editorRef.current?.componentDidUpdate();
     }, [p])
 
     function exec(c: string, v?: any) {
-        editorRef.current.execCommand(c, false, v);
-        editorRef.current.doFocus();
+        editorRef.current?.execCommand(c, false, v);
+        editorRef.current?.doFocus();
     }
     function qcs(c: string) {
         return editorRef.current && editorRef.current.queryCommandState(c);
     }
-    function clear() {
-        // this.setState({ value: '' });
-        editorRef.current.getDocument().body.innerHTML = '';
+    function focusEditor() {
+        editorRef.current?.doFocus();
+    }
+    function onEditorAreaClick(e: any) {
+        const target = e.target as HTMLElement | null;
+        if (target?.closest('button, input, select, textarea, a')) {
+            return;
+        }
+        focusEditor();
     }
     const actions: { [key: string]: any; } = {
         bold: { exec: () => exec('bold'), on: () => qcs('bold'), button: <b>B</b> },
@@ -43,7 +49,7 @@ export function RichTextAreaInput<ContainingType>(p: InputProps<string, Containi
     }
     return <><div class="form-group orte">
         {p.label && <label for={p.id} class={p.class}>{p.label}</label>}
-        <div class="input-group">
+        <div class="input-group" onClick={onEditorAreaClick}>
             <div class="rte-toolbar">
                 {Object.keys(actions).map(k => <button type="button"
                     class={actions[k].on && actions[k].on() ? 'on' : ''}
