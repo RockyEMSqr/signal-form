@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'preact/hooks';
 import { useSignalFormInput } from '../hooks';
 import { InputProps } from '../types';
 import type { JSX } from 'preact/jsx-runtime';
-export function RichTextAreaInput<ContainingType>(p: InputProps<string, ContainingType> & { toolbarAdditions?: JSX.Element[] }) {
+export function RichTextAreaInput<ContainingType>(p: InputProps<string, ContainingType> & { toolbarAdditions?: JSX.Element[], silent?:boolean }) {
     const { value, onChange } = useSignalFormInput(p)
     const editorRef = useRef<RichTextArea>(null);
     useEffect(() => {
@@ -50,12 +50,13 @@ export function RichTextAreaInput<ContainingType>(p: InputProps<string, Containi
     return <><div class="form-group orte">
         {p.label && <label for={p.id} class={p.class}>{p.label}</label>}
         <div class="input-group" onClick={onEditorAreaClick}>
-            <div class="rte-toolbar">
+            {!p.silent && <div class="rte-toolbar">
                 {Object.keys(actions).map(k => <button type="button"
                     class={actions[k].on && actions[k].on() ? 'on' : ''}
                     onClick={actions[k].exec}>{actions[k].button}</button>)}
                 {p.toolbarAdditions && <div class="rte-toolbar-additions">{p.toolbarAdditions}</div>}
-            </div>
+            </div>}
+            
             <RichTextArea ref={editorRef}
                 onInput={onInput}
                 value={value.value}
