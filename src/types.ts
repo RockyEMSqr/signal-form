@@ -255,23 +255,18 @@ type Subtract<A extends number, B extends number> =
 
 type DotNestedKeysInternal<T, Depth extends number = 3> = Depth extends 0
   ? ''
-  : T extends Date | any[]
+  : T extends Date
   ? ''
+  // Arrays expose numeric segments, then recurse through their element type.
+  : T extends readonly (infer Element)[]
+  ? `${number}` | `${number}${DotPrefix<DotNestedKeysInternal<Element, Subtract<Depth, 1>>>}`
   : T extends never
   ? string
   : T extends object
   ? {
-    [K in keyof T]: K extends symbol
-    ? never
-    : T[K] extends object
-    // @ts-expect-error Thinks K can be a symbol
-    ? `${K}${DotPrefix<DotNestedKeysInternal<T[K], Subtract<Depth, 1>>>}`
-    // @ts-expect-error Thinks K can be a symbol
-    : `${K}`
-  }[keyof T]
-  : string extends infer D
-  ? Extract<D, string>
-  : never;
+    [K in keyof T & (string | number)]: `${K}${DotPrefix<DotNestedKeysInternal<T[K], Subtract<Depth, 1>>>}`
+  }[keyof T & (string | number)]
+  : unknown extends T ? string : '';
 
 // type Subtract<A extends number, B extends number> = [
 //   never,
@@ -300,7 +295,7 @@ type DotNestedKeysInternal<T, Depth extends number = 3> = Depth extends 0
 //   : never;
 
 type DotNestedKeys<T> = DotNestedKeysInternal<T, 5>;
-export type Path<T = never> = [T] extends [never] ? string : keyof T | DotNestedKeys<T>
+export type Path<T = never> = [T] extends [never] ? string : (T extends readonly unknown[] ? number : keyof T) | DotNestedKeys<T>
 export type PathOf<T = never> = Path<T>;
 
 type TT = {
