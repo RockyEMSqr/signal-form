@@ -239,22 +239,30 @@ export type SignalFormProps<T> = {
 //   ? Extract<D, string>
 //   : never
 type DotPrefix<T extends string> = T extends '' ? '' : `.${T}`;
-// Consume one tuple entry per segment to bound recursion without conditional arithmetic.
-type DotNestedKeysInternal<T, Depth extends unknown[]> =
-  Depth extends [unknown, ...infer Rest]
-  ? T extends Date
-    ? ''
-    // Arrays expose numeric segments, then recurse through their element type.
-    : T extends readonly (infer Element)[]
-    ? `${number}` | `${number}${DotPrefix<DotNestedKeysInternal<Element, Rest>>}`
+// Bound recursion with a lookup instead of instantiating tuple tails at each step.
+type PreviousDepth = [0, 0, 1, 2, 3, 4];
+type DotNestedKeysInternal<T, Depth extends number> =
+  Depth extends 0 ? ''
+  : unknown extends T
+    ? string
     : T extends object
-    ? {
-      [K in keyof T & (string | number)]: `${K}${DotPrefix<DotNestedKeysInternal<T[K], Rest>>}`
-    }[keyof T & (string | number)]
-    : unknown extends T ? string : ''
-  : '';
+    ? T extends Date
+      ? ''
+      // Arrays expose numeric segments, then recurse through their element type.
+      : T extends readonly (infer Element)[]
+      ? `${number}` | (DotNestedKeysInternal<Element, PreviousDepth[Depth]> extends infer P extends string
+        ? `${number}${DotPrefix<P>}`
+        : never)
+      : {
+        // Defer interpolation until the recursive result is known. Directly nesting
+        // it in DotPrefix makes the compiler expand unresolved generic branches.
+        [K in keyof T & (string | number)]: DotNestedKeysInternal<T[K], PreviousDepth[Depth]> extends infer P extends string
+          ? `${K}${DotPrefix<P>}`
+          : never
+      }[keyof T & (string | number)]
+    : '';
 
-type DotNestedKeys<T> = DotNestedKeysInternal<T, [1, 1, 1, 1, 1]>;
+type DotNestedKeys<T> = DotNestedKeysInternal<T, 5>;
 export type Path<T = never> = [T] extends [never] ? string : (T extends readonly unknown[] ? number : keyof T) | DotNestedKeys<T>
 export type PathOf<T = never> = Path<T>;
 

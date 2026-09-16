@@ -12,10 +12,11 @@ export type SignalFormProps<T> = {
     class?: string;
 };
 type DotPrefix<T extends string> = T extends '' ? '' : `.${T}`;
-type DotNestedKeysInternal<T, Depth extends unknown[]> = Depth extends [unknown, ...infer Rest] ? T extends Date ? '' : T extends readonly (infer Element)[] ? `${number}` | `${number}${DotPrefix<DotNestedKeysInternal<Element, Rest>>}` : T extends object ? {
-    [K in keyof T & (string | number)]: `${K}${DotPrefix<DotNestedKeysInternal<T[K], Rest>>}`;
-}[keyof T & (string | number)] : unknown extends T ? string : '' : '';
-type DotNestedKeys<T> = DotNestedKeysInternal<T, [1, 1, 1, 1, 1]>;
+type PreviousDepth = [0, 0, 1, 2, 3, 4];
+type DotNestedKeysInternal<T, Depth extends number> = Depth extends 0 ? '' : unknown extends T ? string : T extends object ? T extends Date ? '' : T extends readonly (infer Element)[] ? `${number}` | (DotNestedKeysInternal<Element, PreviousDepth[Depth]> extends infer P extends string ? `${number}${DotPrefix<P>}` : never) : {
+    [K in keyof T & (string | number)]: DotNestedKeysInternal<T[K], PreviousDepth[Depth]> extends infer P extends string ? `${K}${DotPrefix<P>}` : never;
+}[keyof T & (string | number)] : '';
+type DotNestedKeys<T> = DotNestedKeysInternal<T, 5>;
 export type Path<T = never> = [T] extends [never] ? string : (T extends readonly unknown[] ? number : keyof T) | DotNestedKeys<T>;
 export type PathOf<T = never> = Path<T>;
 type SignalInputProps<ValueType, ContainingType> = {

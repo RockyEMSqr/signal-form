@@ -50,4 +50,22 @@ export type RecursivePathAssertions = [
     Assert<Includes<Path<Recursive>, "children.0.children.1.value">>,
     Assert<Excludes<Path<Recursive>, "children.0.children.1.children.0.value">>
 ];
+type Mixed = {
+    entries: readonly ({
+        street: string;
+    } | {
+        zip: number;
+    } | null)[];
+    metadata: any;
+    unknownValue: unknown;
+};
+export type MixedPathAssertions = [
+    Assert<Includes<Path<Mixed>, "entries.0.street">>,
+    Assert<Includes<Path<Mixed>, "entries.1.zip">>,
+    Assert<Excludes<Path<Mixed>, "entries.0.missing">>,
+    Assert<Includes<Path<Mixed>, "metadata.arbitrary.nested.path">>,
+    Assert<Includes<Path<Mixed>, "unknownValue.arbitrary.path">>,
+    Assert<Includes<Path<any>, "arbitrary.path">>,
+    Assert<Includes<Path<never>, "arbitrary.path">>
+];
 export {};
