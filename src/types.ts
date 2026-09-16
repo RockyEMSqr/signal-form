@@ -239,62 +239,22 @@ export type SignalFormProps<T> = {
 //   ? Extract<D, string>
 //   : never
 type DotPrefix<T extends string> = T extends '' ? '' : `.${T}`;
-type Subtract<A extends number, B extends number> =
-  A extends 0 ? (B extends 0 ? 0 : 0) :
-  A extends 1 ? (B extends 0 ? 1 : 0) :
-  A extends 2 ? (B extends 0 ? 2 : B extends 1 ? 1 : 0) :
-  A extends 3 ? (B extends 0 ? 3 : B extends 1 ? 2 : B extends 2 ? 1 : 0) :
-  A extends 4 ? (B extends 0 ? 4 : B extends 1 ? 3 : B extends 2 ? 2 : B extends 3 ? 1 : 0) :
-  A extends 5 ? (B extends 0 ? 5 : B extends 1 ? 4 : B extends 2 ? 3 : B extends 3 ? 2 : B extends 4 ? 1 : 0) :
-  A extends 6 ? (B extends 0 ? 6 : B extends 1 ? 5 : B extends 2 ? 4 : B extends 3 ? 3 : B extends 4 ? 2 : B extends 5 ? 1 : 0) :
-  A extends 7 ? (B extends 0 ? 7 : B extends 1 ? 6 : B extends 2 ? 5 : B extends 3 ? 4 : B extends 4 ? 3 : B extends 5 ? 2 : B extends 6 ? 1 : 0) :
-  A extends 8 ? (B extends 0 ? 8 : B extends 1 ? 7 : B extends 2 ? 6 : B extends 3 ? 5 : B extends 4 ? 4 : B extends 5 ? 3 : B extends 6 ? 2 : B extends 7 ? 1 : 0) :
-  A extends 9 ? (B extends 0 ? 9 : B extends 1 ? 8 : B extends 2 ? 7 : B extends 3 ? 6 : B extends 4 ? 5 : B extends 5 ? 4 : B extends 6 ? 3 : B extends 7 ? 2 : B extends 8 ? 1 : 0) :
-  A extends 10 ? (B extends 0 ? 10 : B extends 1 ? 9 : B extends 2 ? 8 : B extends 3 ? 7 : B extends 4 ? 6 : B extends 5 ? 5 : B extends 6 ? 4 : B extends 7 ? 3 : B extends 8 ? 2 : B extends 9 ? 1 : 0) :
-  0;
+// Consume one tuple entry per segment to bound recursion without conditional arithmetic.
+type DotNestedKeysInternal<T, Depth extends unknown[]> =
+  Depth extends [unknown, ...infer Rest]
+  ? T extends Date
+    ? ''
+    // Arrays expose numeric segments, then recurse through their element type.
+    : T extends readonly (infer Element)[]
+    ? `${number}` | `${number}${DotPrefix<DotNestedKeysInternal<Element, Rest>>}`
+    : T extends object
+    ? {
+      [K in keyof T & (string | number)]: `${K}${DotPrefix<DotNestedKeysInternal<T[K], Rest>>}`
+    }[keyof T & (string | number)]
+    : unknown extends T ? string : ''
+  : '';
 
-type DotNestedKeysInternal<T, Depth extends number = 3> = Depth extends 0
-  ? ''
-  : T extends Date
-  ? ''
-  // Arrays expose numeric segments, then recurse through their element type.
-  : T extends readonly (infer Element)[]
-  ? `${number}` | `${number}${DotPrefix<DotNestedKeysInternal<Element, Subtract<Depth, 1>>>}`
-  : T extends never
-  ? string
-  : T extends object
-  ? {
-    [K in keyof T & (string | number)]: `${K}${DotPrefix<DotNestedKeysInternal<T[K], Subtract<Depth, 1>>>}`
-  }[keyof T & (string | number)]
-  : unknown extends T ? string : '';
-
-// type Subtract<A extends number, B extends number> = [
-//   never,
-//   0,
-//   1,
-//   2,
-//   3,
-//   4,
-//   5
-// ][A] extends infer Result
-//   ? [never, never, 0, 1, 2, 3, 4][B] extends infer Subtrahend
-//   ? Result extends Subtrahend
-//   ? 0
-//   : [
-//     never,
-//     Result,
-//     [never, Result],
-//     [never, never, Result],
-//     [never, never, never, Result],
-//     [never, never, never, never, Result],
-//     [never, never, never, never, never, Result]
-//   ][Subtrahend] extends (infer FinalResult extends number)
-//   ? FinalResult
-//   : never
-//   : never
-//   : never;
-
-type DotNestedKeys<T> = DotNestedKeysInternal<T, 5>;
+type DotNestedKeys<T> = DotNestedKeysInternal<T, [1, 1, 1, 1, 1]>;
 export type Path<T = never> = [T] extends [never] ? string : (T extends readonly unknown[] ? number : keyof T) | DotNestedKeys<T>
 export type PathOf<T = never> = Path<T>;
 
