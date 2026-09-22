@@ -3,7 +3,7 @@ import { act, renderHook } from "@testing-library/preact";
 import { describe, expect, it, vi } from "vitest";
 import { SignalFormCtx } from "../src/context";
 import { useGetInputSignal, useSignalForm, useSignalFormInput } from "../src/hooks";
-import { useDeepSignal } from "deepsignal";
+import { deepSignal, useDeepSignal } from "deepsignal";
 
 describe("form hooks", () => {
     it("useSignalForm creates the initial form state", () => {
@@ -54,7 +54,7 @@ describe("form hooks", () => {
     });
 
     it("useGetInputSignal resolves a named field from form context", () => {
-        const data = useDeepSignal({ profile: { name: "Rocky" } });
+        const data = deepSignal({ profile: { name: "Rocky" } });
         const wrapper = ({ children }: { children: any }) => (
             <SignalFormCtx.Provider
                 value={{
@@ -83,7 +83,7 @@ describe("form hooks", () => {
     });
 
     it("useSignalFormInput creates field state and an automatic id", () => {
-        const data = useDeepSignal({ name: "Rocky" });
+        const data = deepSignal({ name: "Rocky" });
         const fieldMap: Record<string, any> = {};
         const wrapper = ({ children }: { children: any }) => (
             <SignalFormCtx.Provider
@@ -112,7 +112,7 @@ describe("form hooks", () => {
     });
 
     it("useSignalFormInput onChange updates the signal, validates, and calls the consumer", () => {
-        const data = useDeepSignal({ name: "ok" });
+        const data = deepSignal({ name: "ok" });
         const onChange = vi.fn();
         const validate = vi.fn((value: string) => value.length >= 3);
         const wrapper = ({ children }: { children: any }) => (
@@ -150,7 +150,7 @@ describe("form hooks", () => {
     });
 
     it("useSignalFormInput onKeyUp updates the signal and calls the consumer", () => {
-        const data = useDeepSignal({ name: "before" });
+        const data = deepSignal({ name: "before" });
         const onKeyUp = vi.fn();
         const wrapper = ({ children }: { children: any }) => (
             <SignalFormCtx.Provider

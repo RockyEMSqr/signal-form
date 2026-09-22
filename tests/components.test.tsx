@@ -1,7 +1,7 @@
 import { signal } from "@preact/signals";
-import { fireEvent, render, screen, waitFor } from "@testing-library/preact";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/preact";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { SignalForm } from "../src/form";
 import { CheckboxGroupInput } from "../src/inputs/checkbox-group";
 import { DateInput, DateTimeInput } from "../src/inputs/datetime";
@@ -10,7 +10,9 @@ import { NumberInput } from "../src/inputs/number";
 import { SelectInput } from "../src/inputs/select";
 import { TextareaInput } from "../src/inputs/textarea";
 import { RichTextAreaInput, WYSIWYGInput } from "../src/inputs/WYSIWYG";
-
+afterEach(() => {
+    cleanup();
+});
 describe("Preact components", () => {
     it("SignalForm renders a form and submits its data", async () => {
         let submitted: any;
