@@ -7,7 +7,9 @@ import dlv from 'dlv';
 // import { toNestedSignal } from "./form";
 import { Signal, useSignal } from "@preact/signals";
 import { useDeepSignal } from "deepsignal";
-const debug = process?.env?.DEBUG;
+const debug =
+    (typeof process !== "undefined" && !!process.env?.DEBUG) ||
+    !!import.meta.env?.DEBUG;
 export function useSignalForm() {
     const formState = useDeepSignal<FormState<any>>({
         submittedCount: 0,

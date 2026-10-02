@@ -1,4 +1,4 @@
-var _a;
+var _a, _b;
 import { useCallback, useContext, useEffect, useMemo } from "preact/hooks";
 import { SignalFormCtx } from "./context";
 import { dset, getSignal } from "./utils";
@@ -6,7 +6,8 @@ import dlv from 'dlv';
 // import { toNestedSignal } from "./form";
 import { Signal, useSignal } from "@preact/signals";
 import { useDeepSignal } from "deepsignal";
-const debug = (_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.DEBUG;
+const debug = (typeof process !== "undefined" && !!((_a = process.env) === null || _a === void 0 ? void 0 : _a.DEBUG)) ||
+    !!((_b = import.meta.env) === null || _b === void 0 ? void 0 : _b.DEBUG);
 export function useSignalForm() {
     const formState = useDeepSignal({
         submittedCount: 0,
