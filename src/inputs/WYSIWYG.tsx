@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'preact/hooks';
 import { useSignalFormInput } from '../hooks';
 import { InputProps } from '../types';
 import type { JSX } from 'preact/jsx-runtime';
-export function RichTextAreaInput<ContainingType>(p: InputProps<string, ContainingType> & { toolbarAdditions?: JSX.Element[], silent?:boolean, editorStyleSheetURL?:string }) {
+export function RichTextAreaInput<ContainingType>(p: InputProps<string, ContainingType> & { toolbarAdditions?: JSX.Element[], silent?: boolean, editorStyleSheetURL?: string }) {
     const { value, onChange } = useSignalFormInput(p)
     const editorRef = useRef<RichTextArea>(null);
     useEffect(() => {
@@ -47,6 +47,27 @@ export function RichTextAreaInput<ContainingType>(p: InputProps<string, Containi
     function onInput(e: any) {
         onChange({ currentTarget: { value: e.value } });
     }
+    useEffect(() => {
+        const iframe = editorRef.current?.base.querySelector('iframe');
+        const doc = iframe?.contentDocument || iframe?.contentWindow?.document;
+        if (!doc) return;
+        let linkEl = doc.getElementById('custom-editor-styles');
+        if (!linkEl) {
+            linkEl = doc.createElement('link');
+            linkEl.id = 'custom-editor-styles';
+            linkEl.rel = 'stylesheet';
+            doc.head.appendChild(linkEl);
+        }
+        linkEl.href = p.editorStyleSheetURL;
+        // todo: inline css?
+        // let styleEl = doc.getElementById('custom-editor-styles');
+        // if (!styleEl) {
+        //   styleEl = doc.createElement('style');
+        //   styleEl.id = 'custom-editor-styles';
+        //   doc.head.appendChild(styleEl);
+        // }
+        // styleEl.textContent = cssText;
+    }, [p.editorStyleSheetURL]);
     return <><div class="form-group orte">
         {p.label && <label for={p.id} class={p.class}>{p.label}</label>}
         <div class="input-group" onClick={onEditorAreaClick}>
@@ -56,9 +77,10 @@ export function RichTextAreaInput<ContainingType>(p: InputProps<string, Containi
                     onClick={actions[k].exec}>{actions[k].button}</button>)}
                 {p.toolbarAdditions && <div class="rte-toolbar-additions">{p.toolbarAdditions}</div>}
             </div>}
-            
-            <RichTextArea ref={editorRef}
-                stylesheet={p.editorStyleSheetURL}
+
+            <RichTextArea
+                ref={editorRef}
+                // stylesheet={p.editorStyleSheetURL}
                 onInput={onInput}
                 value={value.value}
                 id={p.id} />

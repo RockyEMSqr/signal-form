@@ -12,7 +12,7 @@ export function WysiwygEx() {
         console.log(data);
     }}>
 
-        <WYSIWYGInput name='html' />
+        <WYSIWYGInput name='html' editorStyleSheetURL="http://localhost:3009/packages/liyhwui/scss/kbeditor.scss" />
 
         <WYSIWYGInput name="html2" />
 

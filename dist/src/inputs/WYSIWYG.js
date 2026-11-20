@@ -46,6 +46,31 @@ export function RichTextAreaInput(p) {
     function onInput(e) {
         onChange({ currentTarget: { value: e.value } });
     }
-    return _jsx(_Fragment, { children: _jsxs("div", { class: "form-group orte", children: [p.label && _jsx("label", { for: p.id, class: p.class, children: p.label }), _jsxs("div", { class: "input-group", onClick: onEditorAreaClick, children: [!p.silent && _jsxs("div", { class: "rte-toolbar", children: [Object.keys(actions).map(k => _jsx("button", { type: "button", class: actions[k].on && actions[k].on() ? 'on' : '', onClick: actions[k].exec, children: actions[k].button })), p.toolbarAdditions && _jsx("div", { class: "rte-toolbar-additions", children: p.toolbarAdditions })] }), _jsx(RichTextArea, { ref: editorRef, stylesheet: p.editorStyleSheetURL, onInput: onInput, value: value.value, id: p.id }), _jsx("input", { type: "hidden", name: p.name, value: value.value })] })] }) });
+    useEffect(() => {
+        var _a, _b;
+        const iframe = (_a = editorRef.current) === null || _a === void 0 ? void 0 : _a.base.querySelector('iframe');
+        const doc = (iframe === null || iframe === void 0 ? void 0 : iframe.contentDocument) || ((_b = iframe === null || iframe === void 0 ? void 0 : iframe.contentWindow) === null || _b === void 0 ? void 0 : _b.document);
+        if (!doc)
+            return;
+        let linkEl = doc.getElementById('custom-editor-styles');
+        if (!linkEl) {
+            linkEl = doc.createElement('link');
+            linkEl.id = 'custom-editor-styles';
+            linkEl.rel = 'stylesheet';
+            doc.head.appendChild(linkEl);
+        }
+        linkEl.href = p.editorStyleSheetURL;
+        // todo: inline css?
+        // let styleEl = doc.getElementById('custom-editor-styles');
+        // if (!styleEl) {
+        //   styleEl = doc.createElement('style');
+        //   styleEl.id = 'custom-editor-styles';
+        //   doc.head.appendChild(styleEl);
+        // }
+        // styleEl.textContent = cssText;
+    }, [p.editorStyleSheetURL]);
+    return _jsx(_Fragment, { children: _jsxs("div", { class: "form-group orte", children: [p.label && _jsx("label", { for: p.id, class: p.class, children: p.label }), _jsxs("div", { class: "input-group", onClick: onEditorAreaClick, children: [!p.silent && _jsxs("div", { class: "rte-toolbar", children: [Object.keys(actions).map(k => _jsx("button", { type: "button", class: actions[k].on && actions[k].on() ? 'on' : '', onClick: actions[k].exec, children: actions[k].button })), p.toolbarAdditions && _jsx("div", { class: "rte-toolbar-additions", children: p.toolbarAdditions })] }), _jsx(RichTextArea, { ref: editorRef, 
+                            // stylesheet={p.editorStyleSheetURL}
+                            onInput: onInput, value: value.value, id: p.id }), _jsx("input", { type: "hidden", name: p.name, value: value.value })] })] }) });
 }
 export const WYSIWYGInput = RichTextAreaInput;
