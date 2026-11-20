@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'preact/hooks';
 import { useSignalFormInput } from '../hooks';
 import { InputProps } from '../types';
 import type { JSX } from 'preact/jsx-runtime';
-export function RichTextAreaInput<ContainingType>(p: InputProps<string, ContainingType> & { toolbarAdditions?: JSX.Element[], silent?:boolean }) {
+export function RichTextAreaInput<ContainingType>(p: InputProps<string, ContainingType> & { toolbarAdditions?: JSX.Element[], silent?:boolean, editorStyleSheetURL?:string }) {
     const { value, onChange } = useSignalFormInput(p)
     const editorRef = useRef<RichTextArea>(null);
     useEffect(() => {
@@ -58,6 +58,7 @@ export function RichTextAreaInput<ContainingType>(p: InputProps<string, Containi
             </div>}
             
             <RichTextArea ref={editorRef}
+                stylesheet={p.editorStyleSheetURL}
                 onInput={onInput}
                 value={value.value}
                 id={p.id} />
