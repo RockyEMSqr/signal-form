@@ -1,6 +1,6 @@
 {
   "name": "signal-form",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "scripts": {
     "bench:path": "node scripts/benchmark-path.cjs",
     "test": "vitest run",
